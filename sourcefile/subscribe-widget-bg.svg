@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 22.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Lager_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 491 282" style="enable-background:new 0 0 491 282;" xml:space="preserve">
+<style type="text/css">
+	.st0{opacity:0.4296;fill:url(#right-circle_1_);enable-background:new    ;}
+	.st1{opacity:0.22;fill:url(#Oval-Copy-5_1_);enable-background:new    ;}
+	.st2{opacity:9.000000e-02;fill:url(#Oval-Copy-6_1_);enable-background:new    ;}
+</style>
+<title>subscribe-widget-bg</title>
+<desc>Created with Sketch.</desc>
+<g id="Main-Mockups">
+	<g id="subscribe-widget-bg" transform="translate(-20.000000, -14.000000)">
+		<linearGradient id="right-circle_1_" gradientUnits="userSpaceOnUse" x1="325.6417" y1="107.1572" x2="510.6726" y2="107.1572">
+			<stop  offset="0" style="stop-color:#FFFFFF;stop-opacity:0"/>
+			<stop  offset="1" style="stop-color:#D8449F"/>
+		</linearGradient>
+		<circle id="right-circle" class="st0" cx="418.2" cy="107.2" r="92.5"/>
+		<linearGradient id="Oval-Copy-5_1_" gradientUnits="userSpaceOnUse" x1="65.4762" y1="224.293" x2="214.6785" y2="224.293">
+			<stop  offset="0" style="stop-color:#FFFFFF;stop-opacity:0"/>
+			<stop  offset="1" style="stop-color:#D8449F"/>
+		</linearGradient>
+		<path id="Oval-Copy-5" class="st1" d="M111,291.3c35.9,13.1,87-2.6,100.1-38.6s-10.8-83.2-46.7-96.3
+			c-35.9-13.1-81.6,10.3-94.7,46.2S75.1,278.2,111,291.3z"/>
+		<linearGradient id="Oval-Copy-6_1_" gradientUnits="userSpaceOnUse" x1="20.4498" y1="169.8111" x2="132.6415" y2="169.8111">
+			<stop  offset="0" style="stop-color:#FFFFFF;stop-opacity:0"/>
+			<stop  offset="1" style="stop-color:#D8449F"/>
+		</linearGradient>
+		<path id="Oval-Copy-6" class="st2" d="M46.3,132c-19.8,19.8-36.8,55.8-17,75.5s68.6,25.6,88.5,5.8s19.9-67.1,0.2-86.8
+			S66.1,112.2,46.3,132z"/>
+	</g>
+</g>
+</svg>
