@@ -95,7 +95,7 @@
   }
 
 
-  @media only screen and (max-width: 880px) {
+  @media (max-width: 880px) {
     .contact-wraper {
       width: 80%;
     }
@@ -104,9 +104,12 @@
     }
   }
   
-  @media only screen and (max-width: 600px) {
+  @media (max-width: 600px) {
     .intro-text p{
       font-size: 0.8rem;
+    }
+    .contact-wraper {
+      width: 100%;
     }
 
     }
@@ -1612,14 +1615,19 @@
         <cn-services .ic=${this.#i.bind(this)}></cn-services>
         <cn-works .ic=${t}></cn-works>
         <cn-footer></cn-footer>
-    `}}customElements.define("cn-overview",At);const St=a`
+    `}}customElements.define("cn-overview",At),console.log(window.innerWidth);let St=a`
+:host {
+    display: block;
+}
 .header-container{
+
     position: fixed;
     height: 7vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 60%;
+    width: ${r(window.innerWidth<1e3?"100%":"60%")};
+    background: ${r(window.innerWidth<1e3?"red":"blue")};
     left: 0;
     right: 0;
     margin: auto;
@@ -1778,8 +1786,9 @@
 
 
 
-@media only screen and (max-width: 880px) {
+@media(max-width: 80px) {
     .header-container {
+        background: red;
         width: 90%;
     }
     #logotext {
@@ -1812,14 +1821,13 @@
     }
 
 }
+
 @media only screen and (max-width: 600px) {
     .header-container {
         width: 95%;
     }
 
 }
-
-
 
 `;class Ct extends it{static styles=a`
     ${St}
