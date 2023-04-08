@@ -22,3 +22,8 @@
   border-radius: 50px;
 }
 
+
+body, html {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
