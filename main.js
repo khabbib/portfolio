@@ -1,5 +1,5 @@
 /*! For license information please see main.js.LICENSE.txt */
-(()=>{"use strict";var t={662:t=>{var e=function(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")},i=function(){function t(i){var s=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{};if(e(this,t),!(i instanceof Node))throw"Can't initialize VanillaTilt because "+i+" is not a Node.";this.width=null,this.height=null,this.clientWidth=null,this.clientHeight=null,this.left=null,this.top=null,this.gammazero=null,this.betazero=null,this.lastgammazero=null,this.lastbetazero=null,this.transitionTimeout=null,this.updateCall=null,this.event=null,this.updateBind=this.update.bind(this),this.resetBind=this.reset.bind(this),this.element=i,this.settings=this.extendSettings(s),this.reverse=this.settings.reverse?-1:1,this.resetToStart=t.isSettingTrue(this.settings["reset-to-start"]),this.glare=t.isSettingTrue(this.settings.glare),this.glarePrerender=t.isSettingTrue(this.settings["glare-prerender"]),this.fullPageListening=t.isSettingTrue(this.settings["full-page-listening"]),this.gyroscope=t.isSettingTrue(this.settings.gyroscope),this.gyroscopeSamples=this.settings.gyroscopeSamples,this.elementListener=this.getElementListener(),this.glare&&this.prepareGlare(),this.fullPageListening&&this.updateClientSize(),this.addEventListeners(),this.reset(),!1===this.resetToStart&&(this.settings.startX=0,this.settings.startY=0)}return t.isSettingTrue=function(t){return""===t||!0===t||1===t},t.prototype.getElementListener=function(){if(this.fullPageListening)return window.document;if("string"==typeof this.settings["mouse-event-element"]){var t=document.querySelector(this.settings["mouse-event-element"]);if(t)return t}return this.settings["mouse-event-element"]instanceof Node?this.settings["mouse-event-element"]:this.element},t.prototype.addEventListeners=function(){this.onMouseEnterBind=this.onMouseEnter.bind(this),this.onMouseMoveBind=this.onMouseMove.bind(this),this.onMouseLeaveBind=this.onMouseLeave.bind(this),this.onWindowResizeBind=this.onWindowResize.bind(this),this.onDeviceOrientationBind=this.onDeviceOrientation.bind(this),this.elementListener.addEventListener("mouseenter",this.onMouseEnterBind),this.elementListener.addEventListener("mouseleave",this.onMouseLeaveBind),this.elementListener.addEventListener("mousemove",this.onMouseMoveBind),(this.glare||this.fullPageListening)&&window.addEventListener("resize",this.onWindowResizeBind),this.gyroscope&&window.addEventListener("deviceorientation",this.onDeviceOrientationBind)},t.prototype.removeEventListeners=function(){this.elementListener.removeEventListener("mouseenter",this.onMouseEnterBind),this.elementListener.removeEventListener("mouseleave",this.onMouseLeaveBind),this.elementListener.removeEventListener("mousemove",this.onMouseMoveBind),this.gyroscope&&window.removeEventListener("deviceorientation",this.onDeviceOrientationBind),(this.glare||this.fullPageListening)&&window.removeEventListener("resize",this.onWindowResizeBind)},t.prototype.destroy=function(){clearTimeout(this.transitionTimeout),null!==this.updateCall&&cancelAnimationFrame(this.updateCall),this.reset(),this.removeEventListeners(),this.element.vanillaTilt=null,delete this.element.vanillaTilt,this.element=null},t.prototype.onDeviceOrientation=function(t){if(null!==t.gamma&&null!==t.beta){this.updateElementPosition(),this.gyroscopeSamples>0&&(this.lastgammazero=this.gammazero,this.lastbetazero=this.betazero,null===this.gammazero?(this.gammazero=t.gamma,this.betazero=t.beta):(this.gammazero=(t.gamma+this.lastgammazero)/2,this.betazero=(t.beta+this.lastbetazero)/2),this.gyroscopeSamples-=1);var e=this.settings.gyroscopeMaxAngleX-this.settings.gyroscopeMinAngleX,i=this.settings.gyroscopeMaxAngleY-this.settings.gyroscopeMinAngleY,s=e/this.width,n=i/this.height,o=(t.gamma-(this.settings.gyroscopeMinAngleX+this.gammazero))/s,r=(t.beta-(this.settings.gyroscopeMinAngleY+this.betazero))/n;null!==this.updateCall&&cancelAnimationFrame(this.updateCall),this.event={clientX:o+this.left,clientY:r+this.top},this.updateCall=requestAnimationFrame(this.updateBind)}},t.prototype.onMouseEnter=function(){this.updateElementPosition(),this.element.style.willChange="transform",this.setTransition()},t.prototype.onMouseMove=function(t){null!==this.updateCall&&cancelAnimationFrame(this.updateCall),this.event=t,this.updateCall=requestAnimationFrame(this.updateBind)},t.prototype.onMouseLeave=function(){this.setTransition(),this.settings.reset&&requestAnimationFrame(this.resetBind)},t.prototype.reset=function(){this.onMouseEnter(),this.fullPageListening?this.event={clientX:(this.settings.startX+this.settings.max)/(2*this.settings.max)*this.clientWidth,clientY:(this.settings.startY+this.settings.max)/(2*this.settings.max)*this.clientHeight}:this.event={clientX:this.left+(this.settings.startX+this.settings.max)/(2*this.settings.max)*this.width,clientY:this.top+(this.settings.startY+this.settings.max)/(2*this.settings.max)*this.height};var t=this.settings.scale;this.settings.scale=1,this.update(),this.settings.scale=t,this.resetGlare()},t.prototype.resetGlare=function(){this.glare&&(this.glareElement.style.transform="rotate(180deg) translate(-50%, -50%)",this.glareElement.style.opacity="0")},t.prototype.getValues=function(){var t=void 0,e=void 0;return this.fullPageListening?(t=this.event.clientX/this.clientWidth,e=this.event.clientY/this.clientHeight):(t=(this.event.clientX-this.left)/this.width,e=(this.event.clientY-this.top)/this.height),t=Math.min(Math.max(t,0),1),e=Math.min(Math.max(e,0),1),{tiltX:(this.reverse*(this.settings.max-t*this.settings.max*2)).toFixed(2),tiltY:(this.reverse*(e*this.settings.max*2-this.settings.max)).toFixed(2),percentageX:100*t,percentageY:100*e,angle:Math.atan2(this.event.clientX-(this.left+this.width/2),-(this.event.clientY-(this.top+this.height/2)))*(180/Math.PI)}},t.prototype.updateElementPosition=function(){var t=this.element.getBoundingClientRect();this.width=this.element.offsetWidth,this.height=this.element.offsetHeight,this.left=t.left,this.top=t.top},t.prototype.update=function(){var t=this.getValues();this.element.style.transform="perspective("+this.settings.perspective+"px) rotateX("+("x"===this.settings.axis?0:t.tiltY)+"deg) rotateY("+("y"===this.settings.axis?0:t.tiltX)+"deg) scale3d("+this.settings.scale+", "+this.settings.scale+", "+this.settings.scale+")",this.glare&&(this.glareElement.style.transform="rotate("+t.angle+"deg) translate(-50%, -50%)",this.glareElement.style.opacity=""+t.percentageY*this.settings["max-glare"]/100),this.element.dispatchEvent(new CustomEvent("tiltChange",{detail:t})),this.updateCall=null},t.prototype.prepareGlare=function(){if(!this.glarePrerender){var t=document.createElement("div");t.classList.add("js-tilt-glare");var e=document.createElement("div");e.classList.add("js-tilt-glare-inner"),t.appendChild(e),this.element.appendChild(t)}this.glareElementWrapper=this.element.querySelector(".js-tilt-glare"),this.glareElement=this.element.querySelector(".js-tilt-glare-inner"),this.glarePrerender||(Object.assign(this.glareElementWrapper.style,{position:"absolute",top:"0",left:"0",width:"100%",height:"100%",overflow:"hidden","pointer-events":"none","border-radius":"inherit"}),Object.assign(this.glareElement.style,{position:"absolute",top:"50%",left:"50%","pointer-events":"none","background-image":"linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%)",transform:"rotate(180deg) translate(-50%, -50%)","transform-origin":"0% 0%",opacity:"0"}),this.updateGlareSize())},t.prototype.updateGlareSize=function(){if(this.glare){var t=2*(this.element.offsetWidth>this.element.offsetHeight?this.element.offsetWidth:this.element.offsetHeight);Object.assign(this.glareElement.style,{width:t+"px",height:t+"px"})}},t.prototype.updateClientSize=function(){this.clientWidth=window.innerWidth||document.documentElement.clientWidth||document.body.clientWidth,this.clientHeight=window.innerHeight||document.documentElement.clientHeight||document.body.clientHeight},t.prototype.onWindowResize=function(){this.updateGlareSize(),this.updateClientSize()},t.prototype.setTransition=function(){var t=this;clearTimeout(this.transitionTimeout),this.element.style.transition=this.settings.speed+"ms "+this.settings.easing,this.glare&&(this.glareElement.style.transition="opacity "+this.settings.speed+"ms "+this.settings.easing),this.transitionTimeout=setTimeout((function(){t.element.style.transition="",t.glare&&(t.glareElement.style.transition="")}),this.settings.speed)},t.prototype.extendSettings=function(t){var e={reverse:!1,max:15,startX:0,startY:0,perspective:1e3,easing:"cubic-bezier(.03,.98,.52,.99)",scale:1,speed:300,transition:!0,axis:null,glare:!1,"max-glare":1,"glare-prerender":!1,"full-page-listening":!1,"mouse-event-element":null,reset:!0,"reset-to-start":!0,gyroscope:!0,gyroscopeMinAngleX:-45,gyroscopeMaxAngleX:45,gyroscopeMinAngleY:-45,gyroscopeMaxAngleY:45,gyroscopeSamples:10},i={};for(var s in e)if(s in t)i[s]=t[s];else if(this.element.hasAttribute("data-tilt-"+s)){var n=this.element.getAttribute("data-tilt-"+s);try{i[s]=JSON.parse(n)}catch(t){i[s]=n}}else i[s]=e[s];return i},t.init=function(e,i){e instanceof Node&&(e=[e]),e instanceof NodeList&&(e=[].slice.call(e)),e instanceof Array&&e.forEach((function(e){"vanillaTilt"in e||(e.vanillaTilt=new t(e,i))}))},t}();"undefined"!=typeof document&&(window.VanillaTilt=i,i.init(document.querySelectorAll("[data-tilt]"))),t.exports=i}},e={};function i(s){var n=e[s];if(void 0!==n)return n.exports;var o=e[s]={exports:{}};return t[s](o,o.exports,i),o.exports}(()=>{const t=window,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,s=Symbol(),n=new WeakMap;class o{constructor(t,e,i){if(this._$cssResult$=!0,i!==s)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=t,this.t=e}get styleSheet(){let t=this.o;const i=this.t;if(e&&void 0===t){const e=void 0!==i&&1===i.length;e&&(t=n.get(i)),void 0===t&&((this.o=t=new CSSStyleSheet).replaceSync(this.cssText),e&&n.set(i,t))}return t}toString(){return this.cssText}}const r=t=>new o("string"==typeof t?t:t+"",void 0,s),a=(t,...e)=>{const i=1===t.length?t[0]:e.reduce(((e,i,s)=>e+(t=>{if(!0===t._$cssResult$)return t.cssText;if("number"==typeof t)return t;throw Error("Value passed to 'css' function must be a 'css' function result: "+t+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(i)+t[s+1]),t[0]);return new o(i,t,s)},l=e?t=>t:t=>t instanceof CSSStyleSheet?(t=>{let e="";for(const i of t.cssRules)e+=i.cssText;return r(e)})(t):t;var d;const c=window,h=c.trustedTypes,p=h?h.emptyScript:"",g=c.reactiveElementPolyfillSupport,m={toAttribute(t,e){switch(e){case Boolean:t=t?p:null;break;case Object:case Array:t=null==t?t:JSON.stringify(t)}return t},fromAttribute(t,e){let i=t;switch(e){case Boolean:i=null!==t;break;case Number:i=null===t?null:Number(t);break;case Object:case Array:try{i=JSON.parse(t)}catch(t){i=null}}return i}},u=(t,e)=>e!==t&&(e==e||t==t),f={attribute:!0,type:String,converter:m,reflect:!1,hasChanged:u};class v extends HTMLElement{constructor(){super(),this._$Ei=new Map,this.isUpdatePending=!1,this.hasUpdated=!1,this._$El=null,this.u()}static addInitializer(t){var e;this.finalize(),(null!==(e=this.h)&&void 0!==e?e:this.h=[]).push(t)}static get observedAttributes(){this.finalize();const t=[];return this.elementProperties.forEach(((e,i)=>{const s=this._$Ep(i,e);void 0!==s&&(this._$Ev.set(s,i),t.push(s))})),t}static createProperty(t,e=f){if(e.state&&(e.attribute=!1),this.finalize(),this.elementProperties.set(t,e),!e.noAccessor&&!this.prototype.hasOwnProperty(t)){const i="symbol"==typeof t?Symbol():"__"+t,s=this.getPropertyDescriptor(t,i,e);void 0!==s&&Object.defineProperty(this.prototype,t,s)}}static getPropertyDescriptor(t,e,i){return{get(){return this[e]},set(s){const n=this[t];this[e]=s,this.requestUpdate(t,n,i)},configurable:!0,enumerable:!0}}static getPropertyOptions(t){return this.elementProperties.get(t)||f}static finalize(){if(this.hasOwnProperty("finalized"))return!1;this.finalized=!0;const t=Object.getPrototypeOf(this);if(t.finalize(),void 0!==t.h&&(this.h=[...t.h]),this.elementProperties=new Map(t.elementProperties),this._$Ev=new Map,this.hasOwnProperty("properties")){const t=this.properties,e=[...Object.getOwnPropertyNames(t),...Object.getOwnPropertySymbols(t)];for(const i of e)this.createProperty(i,t[i])}return this.elementStyles=this.finalizeStyles(this.styles),!0}static finalizeStyles(t){const e=[];if(Array.isArray(t)){const i=new Set(t.flat(1/0).reverse());for(const t of i)e.unshift(l(t))}else void 0!==t&&e.push(l(t));return e}static _$Ep(t,e){const i=e.attribute;return!1===i?void 0:"string"==typeof i?i:"string"==typeof t?t.toLowerCase():void 0}u(){var t;this._$E_=new Promise((t=>this.enableUpdating=t)),this._$AL=new Map,this._$Eg(),this.requestUpdate(),null===(t=this.constructor.h)||void 0===t||t.forEach((t=>t(this)))}addController(t){var e,i;(null!==(e=this._$ES)&&void 0!==e?e:this._$ES=[]).push(t),void 0!==this.renderRoot&&this.isConnected&&(null===(i=t.hostConnected)||void 0===i||i.call(t))}removeController(t){var e;null===(e=this._$ES)||void 0===e||e.splice(this._$ES.indexOf(t)>>>0,1)}_$Eg(){this.constructor.elementProperties.forEach(((t,e)=>{this.hasOwnProperty(e)&&(this._$Ei.set(e,this[e]),delete this[e])}))}createRenderRoot(){var i;const s=null!==(i=this.shadowRoot)&&void 0!==i?i:this.attachShadow(this.constructor.shadowRootOptions);return((i,s)=>{e?i.adoptedStyleSheets=s.map((t=>t instanceof CSSStyleSheet?t:t.styleSheet)):s.forEach((e=>{const s=document.createElement("style"),n=t.litNonce;void 0!==n&&s.setAttribute("nonce",n),s.textContent=e.cssText,i.appendChild(s)}))})(s,this.constructor.elementStyles),s}connectedCallback(){var t;void 0===this.renderRoot&&(this.renderRoot=this.createRenderRoot()),this.enableUpdating(!0),null===(t=this._$ES)||void 0===t||t.forEach((t=>{var e;return null===(e=t.hostConnected)||void 0===e?void 0:e.call(t)}))}enableUpdating(t){}disconnectedCallback(){var t;null===(t=this._$ES)||void 0===t||t.forEach((t=>{var e;return null===(e=t.hostDisconnected)||void 0===e?void 0:e.call(t)}))}attributeChangedCallback(t,e,i){this._$AK(t,i)}_$EO(t,e,i=f){var s;const n=this.constructor._$Ep(t,i);if(void 0!==n&&!0===i.reflect){const o=(void 0!==(null===(s=i.converter)||void 0===s?void 0:s.toAttribute)?i.converter:m).toAttribute(e,i.type);this._$El=t,null==o?this.removeAttribute(n):this.setAttribute(n,o),this._$El=null}}_$AK(t,e){var i;const s=this.constructor,n=s._$Ev.get(t);if(void 0!==n&&this._$El!==n){const t=s.getPropertyOptions(n),o="function"==typeof t.converter?{fromAttribute:t.converter}:void 0!==(null===(i=t.converter)||void 0===i?void 0:i.fromAttribute)?t.converter:m;this._$El=n,this[n]=o.fromAttribute(e,t.type),this._$El=null}}requestUpdate(t,e,i){let s=!0;void 0!==t&&(((i=i||this.constructor.getPropertyOptions(t)).hasChanged||u)(this[t],e)?(this._$AL.has(t)||this._$AL.set(t,e),!0===i.reflect&&this._$El!==t&&(void 0===this._$EC&&(this._$EC=new Map),this._$EC.set(t,i))):s=!1),!this.isUpdatePending&&s&&(this._$E_=this._$Ej())}async _$Ej(){this.isUpdatePending=!0;try{await this._$E_}catch(t){Promise.reject(t)}const t=this.scheduleUpdate();return null!=t&&await t,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){var t;if(!this.isUpdatePending)return;this.hasUpdated,this._$Ei&&(this._$Ei.forEach(((t,e)=>this[e]=t)),this._$Ei=void 0);let e=!1;const i=this._$AL;try{e=this.shouldUpdate(i),e?(this.willUpdate(i),null===(t=this._$ES)||void 0===t||t.forEach((t=>{var e;return null===(e=t.hostUpdate)||void 0===e?void 0:e.call(t)})),this.update(i)):this._$Ek()}catch(t){throw e=!1,this._$Ek(),t}e&&this._$AE(i)}willUpdate(t){}_$AE(t){var e;null===(e=this._$ES)||void 0===e||e.forEach((t=>{var e;return null===(e=t.hostUpdated)||void 0===e?void 0:e.call(t)})),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(t)),this.updated(t)}_$Ek(){this._$AL=new Map,this.isUpdatePending=!1}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$E_}shouldUpdate(t){return!0}update(t){void 0!==this._$EC&&(this._$EC.forEach(((t,e)=>this._$EO(e,this[e],t))),this._$EC=void 0),this._$Ek()}updated(t){}firstUpdated(t){}}var b;v.finalized=!0,v.elementProperties=new Map,v.elementStyles=[],v.shadowRootOptions={mode:"open"},null==g||g({ReactiveElement:v}),(null!==(d=c.reactiveElementVersions)&&void 0!==d?d:c.reactiveElementVersions=[]).push("1.6.1");const x=window,w=x.trustedTypes,y=w?w.createPolicy("lit-html",{createHTML:t=>t}):void 0,k=`lit$${(Math.random()+"").slice(9)}$`,_="?"+k,$=`<${_}>`,E=document,z=(t="")=>E.createComment(t),A=t=>null===t||"object"!=typeof t&&"function"!=typeof t,j=Array.isArray,S=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,C=/-->/g,T=/>/g,L=RegExp(">|[ \t\n\f\r](?:([^\\s\"'>=/]+)([ \t\n\f\r]*=[ \t\n\f\r]*(?:[^ \t\n\f\r\"'`<>=]|(\"|')|))|$)","g"),M=/'/g,P=/"/g,R=/^(?:script|style|textarea|title)$/i,I=t=>(e,...i)=>({_$litType$:t,strings:e,values:i}),N=I(1),U=(I(2),Symbol.for("lit-noChange")),H=Symbol.for("lit-nothing"),O=new WeakMap,X=E.createTreeWalker(E,129,null,!1),B=(t,e)=>{const i=t.length-1,s=[];let n,o=2===e?"<svg>":"",r=S;for(let e=0;e<i;e++){const i=t[e];let a,l,d=-1,c=0;for(;c<i.length&&(r.lastIndex=c,l=r.exec(i),null!==l);)c=r.lastIndex,r===S?"!--"===l[1]?r=C:void 0!==l[1]?r=T:void 0!==l[2]?(R.test(l[2])&&(n=RegExp("</"+l[2],"g")),r=L):void 0!==l[3]&&(r=L):r===L?">"===l[0]?(r=null!=n?n:S,d=-1):void 0===l[1]?d=-2:(d=r.lastIndex-l[2].length,a=l[1],r=void 0===l[3]?L:'"'===l[3]?P:M):r===P||r===M?r=L:r===C||r===T?r=S:(r=L,n=void 0);const h=r===L&&t[e+1].startsWith("/>")?" ":"";o+=r===S?i+$:d>=0?(s.push(a),i.slice(0,d)+"$lit$"+i.slice(d)+k+h):i+k+(-2===d?(s.push(void 0),e):h)}const a=o+(t[i]||"<?>")+(2===e?"</svg>":"");if(!Array.isArray(t)||!t.hasOwnProperty("raw"))throw Error("invalid template strings array");return[void 0!==y?y.createHTML(a):a,s]};class D{constructor({strings:t,_$litType$:e},i){let s;this.parts=[];let n=0,o=0;const r=t.length-1,a=this.parts,[l,d]=B(t,e);if(this.el=D.createElement(l,i),X.currentNode=this.el.content,2===e){const t=this.el.content,e=t.firstChild;e.remove(),t.append(...e.childNodes)}for(;null!==(s=X.nextNode())&&a.length<r;){if(1===s.nodeType){if(s.hasAttributes()){const t=[];for(const e of s.getAttributeNames())if(e.endsWith("$lit$")||e.startsWith(k)){const i=d[o++];if(t.push(e),void 0!==i){const t=s.getAttribute(i.toLowerCase()+"$lit$").split(k),e=/([.?@])?(.*)/.exec(i);a.push({type:1,index:n,name:e[2],strings:t,ctor:"."===e[1]?J:"?"===e[1]?V:"@"===e[1]?Z:q})}else a.push({type:6,index:n})}for(const e of t)s.removeAttribute(e)}if(R.test(s.tagName)){const t=s.textContent.split(k),e=t.length-1;if(e>0){s.textContent=w?w.emptyScript:"";for(let i=0;i<e;i++)s.append(t[i],z()),X.nextNode(),a.push({type:2,index:++n});s.append(t[e],z())}}}else if(8===s.nodeType)if(s.data===_)a.push({type:2,index:n});else{let t=-1;for(;-1!==(t=s.data.indexOf(k,t+1));)a.push({type:7,index:n}),t+=k.length-1}n++}}static createElement(t,e){const i=E.createElement("template");return i.innerHTML=t,i}}function W(t,e,i=t,s){var n,o,r,a;if(e===U)return e;let l=void 0!==s?null===(n=i._$Co)||void 0===n?void 0:n[s]:i._$Cl;const d=A(e)?void 0:e._$litDirective$;return(null==l?void 0:l.constructor)!==d&&(null===(o=null==l?void 0:l._$AO)||void 0===o||o.call(l,!1),void 0===d?l=void 0:(l=new d(t),l._$AT(t,i,s)),void 0!==s?(null!==(r=(a=i)._$Co)&&void 0!==r?r:a._$Co=[])[s]=l:i._$Cl=l),void 0!==l&&(e=W(t,l._$AS(t,e.values),l,s)),e}class Y{constructor(t,e){this.u=[],this._$AN=void 0,this._$AD=t,this._$AM=e}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}v(t){var e;const{el:{content:i},parts:s}=this._$AD,n=(null!==(e=null==t?void 0:t.creationScope)&&void 0!==e?e:E).importNode(i,!0);X.currentNode=n;let o=X.nextNode(),r=0,a=0,l=s[0];for(;void 0!==l;){if(r===l.index){let e;2===l.type?e=new F(o,o.nextSibling,this,t):1===l.type?e=new l.ctor(o,l.name,l.strings,this,t):6===l.type&&(e=new K(o,this,t)),this.u.push(e),l=s[++a]}r!==(null==l?void 0:l.index)&&(o=X.nextNode(),r++)}return n}p(t){let e=0;for(const i of this.u)void 0!==i&&(void 0!==i.strings?(i._$AI(t,i,e),e+=i.strings.length-2):i._$AI(t[e])),e++}}class F{constructor(t,e,i,s){var n;this.type=2,this._$AH=H,this._$AN=void 0,this._$AA=t,this._$AB=e,this._$AM=i,this.options=s,this._$Cm=null===(n=null==s?void 0:s.isConnected)||void 0===n||n}get _$AU(){var t,e;return null!==(e=null===(t=this._$AM)||void 0===t?void 0:t._$AU)&&void 0!==e?e:this._$Cm}get parentNode(){let t=this._$AA.parentNode;const e=this._$AM;return void 0!==e&&11===t.nodeType&&(t=e.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,e=this){t=W(this,t,e),A(t)?t===H||null==t||""===t?(this._$AH!==H&&this._$AR(),this._$AH=H):t!==this._$AH&&t!==U&&this.g(t):void 0!==t._$litType$?this.$(t):void 0!==t.nodeType?this.T(t):(t=>j(t)||"function"==typeof(null==t?void 0:t[Symbol.iterator]))(t)?this.k(t):this.g(t)}O(t,e=this._$AB){return this._$AA.parentNode.insertBefore(t,e)}T(t){this._$AH!==t&&(this._$AR(),this._$AH=this.O(t))}g(t){this._$AH!==H&&A(this._$AH)?this._$AA.nextSibling.data=t:this.T(E.createTextNode(t)),this._$AH=t}$(t){var e;const{values:i,_$litType$:s}=t,n="number"==typeof s?this._$AC(t):(void 0===s.el&&(s.el=D.createElement(s.h,this.options)),s);if((null===(e=this._$AH)||void 0===e?void 0:e._$AD)===n)this._$AH.p(i);else{const t=new Y(n,this),e=t.v(this.options);t.p(i),this.T(e),this._$AH=t}}_$AC(t){let e=O.get(t.strings);return void 0===e&&O.set(t.strings,e=new D(t)),e}k(t){j(this._$AH)||(this._$AH=[],this._$AR());const e=this._$AH;let i,s=0;for(const n of t)s===e.length?e.push(i=new F(this.O(z()),this.O(z()),this,this.options)):i=e[s],i._$AI(n),s++;s<e.length&&(this._$AR(i&&i._$AB.nextSibling,s),e.length=s)}_$AR(t=this._$AA.nextSibling,e){var i;for(null===(i=this._$AP)||void 0===i||i.call(this,!1,!0,e);t&&t!==this._$AB;){const e=t.nextSibling;t.remove(),t=e}}setConnected(t){var e;void 0===this._$AM&&(this._$Cm=t,null===(e=this._$AP)||void 0===e||e.call(this,t))}}class q{constructor(t,e,i,s,n){this.type=1,this._$AH=H,this._$AN=void 0,this.element=t,this.name=e,this._$AM=s,this.options=n,i.length>2||""!==i[0]||""!==i[1]?(this._$AH=Array(i.length-1).fill(new String),this.strings=i):this._$AH=H}get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}_$AI(t,e=this,i,s){const n=this.strings;let o=!1;if(void 0===n)t=W(this,t,e,0),o=!A(t)||t!==this._$AH&&t!==U,o&&(this._$AH=t);else{const s=t;let r,a;for(t=n[0],r=0;r<n.length-1;r++)a=W(this,s[i+r],e,r),a===U&&(a=this._$AH[r]),o||(o=!A(a)||a!==this._$AH[r]),a===H?t=H:t!==H&&(t+=(null!=a?a:"")+n[r+1]),this._$AH[r]=a}o&&!s&&this.j(t)}j(t){t===H?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,null!=t?t:"")}}class J extends q{constructor(){super(...arguments),this.type=3}j(t){this.element[this.name]=t===H?void 0:t}}const G=w?w.emptyScript:"";class V extends q{constructor(){super(...arguments),this.type=4}j(t){t&&t!==H?this.element.setAttribute(this.name,G):this.element.removeAttribute(this.name)}}class Z extends q{constructor(t,e,i,s,n){super(t,e,i,s,n),this.type=5}_$AI(t,e=this){var i;if((t=null!==(i=W(this,t,e,0))&&void 0!==i?i:H)===U)return;const s=this._$AH,n=t===H&&s!==H||t.capture!==s.capture||t.once!==s.once||t.passive!==s.passive,o=t!==H&&(s===H||n);n&&this.element.removeEventListener(this.name,this,s),o&&this.element.addEventListener(this.name,this,t),this._$AH=t}handleEvent(t){var e,i;"function"==typeof this._$AH?this._$AH.call(null!==(i=null===(e=this.options)||void 0===e?void 0:e.host)&&void 0!==i?i:this.element,t):this._$AH.handleEvent(t)}}class K{constructor(t,e,i){this.element=t,this.type=6,this._$AN=void 0,this._$AM=e,this.options=i}get _$AU(){return this._$AM._$AU}_$AI(t){W(this,t)}}const Q=x.litHtmlPolyfillSupport;var tt,et;null==Q||Q(D,F),(null!==(b=x.litHtmlVersions)&&void 0!==b?b:x.litHtmlVersions=[]).push("2.6.1");class it extends v{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){var t,e;const i=super.createRenderRoot();return null!==(t=(e=this.renderOptions).renderBefore)&&void 0!==t||(e.renderBefore=i.firstChild),i}update(t){const e=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(t),this._$Do=((t,e,i)=>{var s,n;const o=null!==(s=null==i?void 0:i.renderBefore)&&void 0!==s?s:e;let r=o._$litPart$;if(void 0===r){const t=null!==(n=null==i?void 0:i.renderBefore)&&void 0!==n?n:null;o._$litPart$=r=new F(e.insertBefore(z(),t),t,void 0,null!=i?i:{})}return r._$AI(t),r})(e,this.renderRoot,this.renderOptions)}connectedCallback(){var t;super.connectedCallback(),null===(t=this._$Do)||void 0===t||t.setConnected(!0)}disconnectedCallback(){var t;super.disconnectedCallback(),null===(t=this._$Do)||void 0===t||t.setConnected(!1)}render(){return U}}it.finalized=!0,it._$litElement$=!0,null===(tt=globalThis.litElementHydrateSupport)||void 0===tt||tt.call(globalThis,{LitElement:it});const st=globalThis.litElementPolyfillSupport;var nt;null==st||st({LitElement:it}),(null!==(et=globalThis.litElementVersions)&&void 0!==et?et:globalThis.litElementVersions=[]).push("3.2.2"),null===(nt=window.HTMLSlotElement)||void 0===nt||nt.prototype.assignedElements,console.warn("The main 'lit-element' module entrypoint is deprecated. Please update your imports to use the 'lit' package: 'lit' and 'lit/decorators.ts' or import from 'lit-element/lit-element.ts'. See https://lit.dev/msg/deprecated-import-path for more information.");var ot=i(662);const rt="#000000",at="#f5f5f5",lt="#e5e5e5",dt="#f5f5f5",ct="#939caa",ht="#262d35",pt="#384b64",gt="#F073C8",mt="#7e04e8",ut="#ffffff",ft="#f6f6f6",vt="#edeff1",bt="#a8a8a9",xt="linear-gradient(90deg, #f073c8 0%, #ff6a95 99%)",wt="linear-gradient(90deg, #ffffff 0%, #f6f6f6 99%)",yt=a`
+(()=>{"use strict";var t={662:t=>{var e=function(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")},i=function(){function t(i){var s=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{};if(e(this,t),!(i instanceof Node))throw"Can't initialize VanillaTilt because "+i+" is not a Node.";this.width=null,this.height=null,this.clientWidth=null,this.clientHeight=null,this.left=null,this.top=null,this.gammazero=null,this.betazero=null,this.lastgammazero=null,this.lastbetazero=null,this.transitionTimeout=null,this.updateCall=null,this.event=null,this.updateBind=this.update.bind(this),this.resetBind=this.reset.bind(this),this.element=i,this.settings=this.extendSettings(s),this.reverse=this.settings.reverse?-1:1,this.resetToStart=t.isSettingTrue(this.settings["reset-to-start"]),this.glare=t.isSettingTrue(this.settings.glare),this.glarePrerender=t.isSettingTrue(this.settings["glare-prerender"]),this.fullPageListening=t.isSettingTrue(this.settings["full-page-listening"]),this.gyroscope=t.isSettingTrue(this.settings.gyroscope),this.gyroscopeSamples=this.settings.gyroscopeSamples,this.elementListener=this.getElementListener(),this.glare&&this.prepareGlare(),this.fullPageListening&&this.updateClientSize(),this.addEventListeners(),this.reset(),!1===this.resetToStart&&(this.settings.startX=0,this.settings.startY=0)}return t.isSettingTrue=function(t){return""===t||!0===t||1===t},t.prototype.getElementListener=function(){if(this.fullPageListening)return window.document;if("string"==typeof this.settings["mouse-event-element"]){var t=document.querySelector(this.settings["mouse-event-element"]);if(t)return t}return this.settings["mouse-event-element"]instanceof Node?this.settings["mouse-event-element"]:this.element},t.prototype.addEventListeners=function(){this.onMouseEnterBind=this.onMouseEnter.bind(this),this.onMouseMoveBind=this.onMouseMove.bind(this),this.onMouseLeaveBind=this.onMouseLeave.bind(this),this.onWindowResizeBind=this.onWindowResize.bind(this),this.onDeviceOrientationBind=this.onDeviceOrientation.bind(this),this.elementListener.addEventListener("mouseenter",this.onMouseEnterBind),this.elementListener.addEventListener("mouseleave",this.onMouseLeaveBind),this.elementListener.addEventListener("mousemove",this.onMouseMoveBind),(this.glare||this.fullPageListening)&&window.addEventListener("resize",this.onWindowResizeBind),this.gyroscope&&window.addEventListener("deviceorientation",this.onDeviceOrientationBind)},t.prototype.removeEventListeners=function(){this.elementListener.removeEventListener("mouseenter",this.onMouseEnterBind),this.elementListener.removeEventListener("mouseleave",this.onMouseLeaveBind),this.elementListener.removeEventListener("mousemove",this.onMouseMoveBind),this.gyroscope&&window.removeEventListener("deviceorientation",this.onDeviceOrientationBind),(this.glare||this.fullPageListening)&&window.removeEventListener("resize",this.onWindowResizeBind)},t.prototype.destroy=function(){clearTimeout(this.transitionTimeout),null!==this.updateCall&&cancelAnimationFrame(this.updateCall),this.reset(),this.removeEventListeners(),this.element.vanillaTilt=null,delete this.element.vanillaTilt,this.element=null},t.prototype.onDeviceOrientation=function(t){if(null!==t.gamma&&null!==t.beta){this.updateElementPosition(),this.gyroscopeSamples>0&&(this.lastgammazero=this.gammazero,this.lastbetazero=this.betazero,null===this.gammazero?(this.gammazero=t.gamma,this.betazero=t.beta):(this.gammazero=(t.gamma+this.lastgammazero)/2,this.betazero=(t.beta+this.lastbetazero)/2),this.gyroscopeSamples-=1);var e=this.settings.gyroscopeMaxAngleX-this.settings.gyroscopeMinAngleX,i=this.settings.gyroscopeMaxAngleY-this.settings.gyroscopeMinAngleY,s=e/this.width,n=i/this.height,r=(t.gamma-(this.settings.gyroscopeMinAngleX+this.gammazero))/s,o=(t.beta-(this.settings.gyroscopeMinAngleY+this.betazero))/n;null!==this.updateCall&&cancelAnimationFrame(this.updateCall),this.event={clientX:r+this.left,clientY:o+this.top},this.updateCall=requestAnimationFrame(this.updateBind)}},t.prototype.onMouseEnter=function(){this.updateElementPosition(),this.element.style.willChange="transform",this.setTransition()},t.prototype.onMouseMove=function(t){null!==this.updateCall&&cancelAnimationFrame(this.updateCall),this.event=t,this.updateCall=requestAnimationFrame(this.updateBind)},t.prototype.onMouseLeave=function(){this.setTransition(),this.settings.reset&&requestAnimationFrame(this.resetBind)},t.prototype.reset=function(){this.onMouseEnter(),this.fullPageListening?this.event={clientX:(this.settings.startX+this.settings.max)/(2*this.settings.max)*this.clientWidth,clientY:(this.settings.startY+this.settings.max)/(2*this.settings.max)*this.clientHeight}:this.event={clientX:this.left+(this.settings.startX+this.settings.max)/(2*this.settings.max)*this.width,clientY:this.top+(this.settings.startY+this.settings.max)/(2*this.settings.max)*this.height};var t=this.settings.scale;this.settings.scale=1,this.update(),this.settings.scale=t,this.resetGlare()},t.prototype.resetGlare=function(){this.glare&&(this.glareElement.style.transform="rotate(180deg) translate(-50%, -50%)",this.glareElement.style.opacity="0")},t.prototype.getValues=function(){var t=void 0,e=void 0;return this.fullPageListening?(t=this.event.clientX/this.clientWidth,e=this.event.clientY/this.clientHeight):(t=(this.event.clientX-this.left)/this.width,e=(this.event.clientY-this.top)/this.height),t=Math.min(Math.max(t,0),1),e=Math.min(Math.max(e,0),1),{tiltX:(this.reverse*(this.settings.max-t*this.settings.max*2)).toFixed(2),tiltY:(this.reverse*(e*this.settings.max*2-this.settings.max)).toFixed(2),percentageX:100*t,percentageY:100*e,angle:Math.atan2(this.event.clientX-(this.left+this.width/2),-(this.event.clientY-(this.top+this.height/2)))*(180/Math.PI)}},t.prototype.updateElementPosition=function(){var t=this.element.getBoundingClientRect();this.width=this.element.offsetWidth,this.height=this.element.offsetHeight,this.left=t.left,this.top=t.top},t.prototype.update=function(){var t=this.getValues();this.element.style.transform="perspective("+this.settings.perspective+"px) rotateX("+("x"===this.settings.axis?0:t.tiltY)+"deg) rotateY("+("y"===this.settings.axis?0:t.tiltX)+"deg) scale3d("+this.settings.scale+", "+this.settings.scale+", "+this.settings.scale+")",this.glare&&(this.glareElement.style.transform="rotate("+t.angle+"deg) translate(-50%, -50%)",this.glareElement.style.opacity=""+t.percentageY*this.settings["max-glare"]/100),this.element.dispatchEvent(new CustomEvent("tiltChange",{detail:t})),this.updateCall=null},t.prototype.prepareGlare=function(){if(!this.glarePrerender){var t=document.createElement("div");t.classList.add("js-tilt-glare");var e=document.createElement("div");e.classList.add("js-tilt-glare-inner"),t.appendChild(e),this.element.appendChild(t)}this.glareElementWrapper=this.element.querySelector(".js-tilt-glare"),this.glareElement=this.element.querySelector(".js-tilt-glare-inner"),this.glarePrerender||(Object.assign(this.glareElementWrapper.style,{position:"absolute",top:"0",left:"0",width:"100%",height:"100%",overflow:"hidden","pointer-events":"none","border-radius":"inherit"}),Object.assign(this.glareElement.style,{position:"absolute",top:"50%",left:"50%","pointer-events":"none","background-image":"linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%)",transform:"rotate(180deg) translate(-50%, -50%)","transform-origin":"0% 0%",opacity:"0"}),this.updateGlareSize())},t.prototype.updateGlareSize=function(){if(this.glare){var t=2*(this.element.offsetWidth>this.element.offsetHeight?this.element.offsetWidth:this.element.offsetHeight);Object.assign(this.glareElement.style,{width:t+"px",height:t+"px"})}},t.prototype.updateClientSize=function(){this.clientWidth=window.innerWidth||document.documentElement.clientWidth||document.body.clientWidth,this.clientHeight=window.innerHeight||document.documentElement.clientHeight||document.body.clientHeight},t.prototype.onWindowResize=function(){this.updateGlareSize(),this.updateClientSize()},t.prototype.setTransition=function(){var t=this;clearTimeout(this.transitionTimeout),this.element.style.transition=this.settings.speed+"ms "+this.settings.easing,this.glare&&(this.glareElement.style.transition="opacity "+this.settings.speed+"ms "+this.settings.easing),this.transitionTimeout=setTimeout((function(){t.element.style.transition="",t.glare&&(t.glareElement.style.transition="")}),this.settings.speed)},t.prototype.extendSettings=function(t){var e={reverse:!1,max:15,startX:0,startY:0,perspective:1e3,easing:"cubic-bezier(.03,.98,.52,.99)",scale:1,speed:300,transition:!0,axis:null,glare:!1,"max-glare":1,"glare-prerender":!1,"full-page-listening":!1,"mouse-event-element":null,reset:!0,"reset-to-start":!0,gyroscope:!0,gyroscopeMinAngleX:-45,gyroscopeMaxAngleX:45,gyroscopeMinAngleY:-45,gyroscopeMaxAngleY:45,gyroscopeSamples:10},i={};for(var s in e)if(s in t)i[s]=t[s];else if(this.element.hasAttribute("data-tilt-"+s)){var n=this.element.getAttribute("data-tilt-"+s);try{i[s]=JSON.parse(n)}catch(t){i[s]=n}}else i[s]=e[s];return i},t.init=function(e,i){e instanceof Node&&(e=[e]),e instanceof NodeList&&(e=[].slice.call(e)),e instanceof Array&&e.forEach((function(e){"vanillaTilt"in e||(e.vanillaTilt=new t(e,i))}))},t}();"undefined"!=typeof document&&(window.VanillaTilt=i,i.init(document.querySelectorAll("[data-tilt]"))),t.exports=i}},e={};function i(s){var n=e[s];if(void 0!==n)return n.exports;var r=e[s]={exports:{}};return t[s](r,r.exports,i),r.exports}(()=>{const t=window,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,s=Symbol(),n=new WeakMap;class r{constructor(t,e,i){if(this._$cssResult$=!0,i!==s)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=t,this.t=e}get styleSheet(){let t=this.o;const i=this.t;if(e&&void 0===t){const e=void 0!==i&&1===i.length;e&&(t=n.get(i)),void 0===t&&((this.o=t=new CSSStyleSheet).replaceSync(this.cssText),e&&n.set(i,t))}return t}toString(){return this.cssText}}const o=t=>new r("string"==typeof t?t:t+"",void 0,s),a=(t,...e)=>{const i=1===t.length?t[0]:e.reduce(((e,i,s)=>e+(t=>{if(!0===t._$cssResult$)return t.cssText;if("number"==typeof t)return t;throw Error("Value passed to 'css' function must be a 'css' function result: "+t+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(i)+t[s+1]),t[0]);return new r(i,t,s)},l=e?t=>t:t=>t instanceof CSSStyleSheet?(t=>{let e="";for(const i of t.cssRules)e+=i.cssText;return o(e)})(t):t;var d;const c=window,p=c.trustedTypes,h=p?p.emptyScript:"",g=c.reactiveElementPolyfillSupport,m={toAttribute(t,e){switch(e){case Boolean:t=t?h:null;break;case Object:case Array:t=null==t?t:JSON.stringify(t)}return t},fromAttribute(t,e){let i=t;switch(e){case Boolean:i=null!==t;break;case Number:i=null===t?null:Number(t);break;case Object:case Array:try{i=JSON.parse(t)}catch(t){i=null}}return i}},u=(t,e)=>e!==t&&(e==e||t==t),f={attribute:!0,type:String,converter:m,reflect:!1,hasChanged:u};class v extends HTMLElement{constructor(){super(),this._$Ei=new Map,this.isUpdatePending=!1,this.hasUpdated=!1,this._$El=null,this.u()}static addInitializer(t){var e;this.finalize(),(null!==(e=this.h)&&void 0!==e?e:this.h=[]).push(t)}static get observedAttributes(){this.finalize();const t=[];return this.elementProperties.forEach(((e,i)=>{const s=this._$Ep(i,e);void 0!==s&&(this._$Ev.set(s,i),t.push(s))})),t}static createProperty(t,e=f){if(e.state&&(e.attribute=!1),this.finalize(),this.elementProperties.set(t,e),!e.noAccessor&&!this.prototype.hasOwnProperty(t)){const i="symbol"==typeof t?Symbol():"__"+t,s=this.getPropertyDescriptor(t,i,e);void 0!==s&&Object.defineProperty(this.prototype,t,s)}}static getPropertyDescriptor(t,e,i){return{get(){return this[e]},set(s){const n=this[t];this[e]=s,this.requestUpdate(t,n,i)},configurable:!0,enumerable:!0}}static getPropertyOptions(t){return this.elementProperties.get(t)||f}static finalize(){if(this.hasOwnProperty("finalized"))return!1;this.finalized=!0;const t=Object.getPrototypeOf(this);if(t.finalize(),void 0!==t.h&&(this.h=[...t.h]),this.elementProperties=new Map(t.elementProperties),this._$Ev=new Map,this.hasOwnProperty("properties")){const t=this.properties,e=[...Object.getOwnPropertyNames(t),...Object.getOwnPropertySymbols(t)];for(const i of e)this.createProperty(i,t[i])}return this.elementStyles=this.finalizeStyles(this.styles),!0}static finalizeStyles(t){const e=[];if(Array.isArray(t)){const i=new Set(t.flat(1/0).reverse());for(const t of i)e.unshift(l(t))}else void 0!==t&&e.push(l(t));return e}static _$Ep(t,e){const i=e.attribute;return!1===i?void 0:"string"==typeof i?i:"string"==typeof t?t.toLowerCase():void 0}u(){var t;this._$E_=new Promise((t=>this.enableUpdating=t)),this._$AL=new Map,this._$Eg(),this.requestUpdate(),null===(t=this.constructor.h)||void 0===t||t.forEach((t=>t(this)))}addController(t){var e,i;(null!==(e=this._$ES)&&void 0!==e?e:this._$ES=[]).push(t),void 0!==this.renderRoot&&this.isConnected&&(null===(i=t.hostConnected)||void 0===i||i.call(t))}removeController(t){var e;null===(e=this._$ES)||void 0===e||e.splice(this._$ES.indexOf(t)>>>0,1)}_$Eg(){this.constructor.elementProperties.forEach(((t,e)=>{this.hasOwnProperty(e)&&(this._$Ei.set(e,this[e]),delete this[e])}))}createRenderRoot(){var i;const s=null!==(i=this.shadowRoot)&&void 0!==i?i:this.attachShadow(this.constructor.shadowRootOptions);return((i,s)=>{e?i.adoptedStyleSheets=s.map((t=>t instanceof CSSStyleSheet?t:t.styleSheet)):s.forEach((e=>{const s=document.createElement("style"),n=t.litNonce;void 0!==n&&s.setAttribute("nonce",n),s.textContent=e.cssText,i.appendChild(s)}))})(s,this.constructor.elementStyles),s}connectedCallback(){var t;void 0===this.renderRoot&&(this.renderRoot=this.createRenderRoot()),this.enableUpdating(!0),null===(t=this._$ES)||void 0===t||t.forEach((t=>{var e;return null===(e=t.hostConnected)||void 0===e?void 0:e.call(t)}))}enableUpdating(t){}disconnectedCallback(){var t;null===(t=this._$ES)||void 0===t||t.forEach((t=>{var e;return null===(e=t.hostDisconnected)||void 0===e?void 0:e.call(t)}))}attributeChangedCallback(t,e,i){this._$AK(t,i)}_$EO(t,e,i=f){var s;const n=this.constructor._$Ep(t,i);if(void 0!==n&&!0===i.reflect){const r=(void 0!==(null===(s=i.converter)||void 0===s?void 0:s.toAttribute)?i.converter:m).toAttribute(e,i.type);this._$El=t,null==r?this.removeAttribute(n):this.setAttribute(n,r),this._$El=null}}_$AK(t,e){var i;const s=this.constructor,n=s._$Ev.get(t);if(void 0!==n&&this._$El!==n){const t=s.getPropertyOptions(n),r="function"==typeof t.converter?{fromAttribute:t.converter}:void 0!==(null===(i=t.converter)||void 0===i?void 0:i.fromAttribute)?t.converter:m;this._$El=n,this[n]=r.fromAttribute(e,t.type),this._$El=null}}requestUpdate(t,e,i){let s=!0;void 0!==t&&(((i=i||this.constructor.getPropertyOptions(t)).hasChanged||u)(this[t],e)?(this._$AL.has(t)||this._$AL.set(t,e),!0===i.reflect&&this._$El!==t&&(void 0===this._$EC&&(this._$EC=new Map),this._$EC.set(t,i))):s=!1),!this.isUpdatePending&&s&&(this._$E_=this._$Ej())}async _$Ej(){this.isUpdatePending=!0;try{await this._$E_}catch(t){Promise.reject(t)}const t=this.scheduleUpdate();return null!=t&&await t,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){var t;if(!this.isUpdatePending)return;this.hasUpdated,this._$Ei&&(this._$Ei.forEach(((t,e)=>this[e]=t)),this._$Ei=void 0);let e=!1;const i=this._$AL;try{e=this.shouldUpdate(i),e?(this.willUpdate(i),null===(t=this._$ES)||void 0===t||t.forEach((t=>{var e;return null===(e=t.hostUpdate)||void 0===e?void 0:e.call(t)})),this.update(i)):this._$Ek()}catch(t){throw e=!1,this._$Ek(),t}e&&this._$AE(i)}willUpdate(t){}_$AE(t){var e;null===(e=this._$ES)||void 0===e||e.forEach((t=>{var e;return null===(e=t.hostUpdated)||void 0===e?void 0:e.call(t)})),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(t)),this.updated(t)}_$Ek(){this._$AL=new Map,this.isUpdatePending=!1}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$E_}shouldUpdate(t){return!0}update(t){void 0!==this._$EC&&(this._$EC.forEach(((t,e)=>this._$EO(e,this[e],t))),this._$EC=void 0),this._$Ek()}updated(t){}firstUpdated(t){}}var b;v.finalized=!0,v.elementProperties=new Map,v.elementStyles=[],v.shadowRootOptions={mode:"open"},null==g||g({ReactiveElement:v}),(null!==(d=c.reactiveElementVersions)&&void 0!==d?d:c.reactiveElementVersions=[]).push("1.6.1");const x=window,w=x.trustedTypes,y=w?w.createPolicy("lit-html",{createHTML:t=>t}):void 0,k=`lit$${(Math.random()+"").slice(9)}$`,_="?"+k,$=`<${_}>`,E=document,z=(t="")=>E.createComment(t),A=t=>null===t||"object"!=typeof t&&"function"!=typeof t,j=Array.isArray,S=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,C=/-->/g,L=/>/g,T=RegExp(">|[ \t\n\f\r](?:([^\\s\"'>=/]+)([ \t\n\f\r]*=[ \t\n\f\r]*(?:[^ \t\n\f\r\"'`<>=]|(\"|')|))|$)","g"),M=/'/g,P=/"/g,I=/^(?:script|style|textarea|title)$/i,N=t=>(e,...i)=>({_$litType$:t,strings:e,values:i}),R=N(1),H=(N(2),Symbol.for("lit-noChange")),U=Symbol.for("lit-nothing"),B=new WeakMap,D=E.createTreeWalker(E,129,null,!1),X=(t,e)=>{const i=t.length-1,s=[];let n,r=2===e?"<svg>":"",o=S;for(let e=0;e<i;e++){const i=t[e];let a,l,d=-1,c=0;for(;c<i.length&&(o.lastIndex=c,l=o.exec(i),null!==l);)c=o.lastIndex,o===S?"!--"===l[1]?o=C:void 0!==l[1]?o=L:void 0!==l[2]?(I.test(l[2])&&(n=RegExp("</"+l[2],"g")),o=T):void 0!==l[3]&&(o=T):o===T?">"===l[0]?(o=null!=n?n:S,d=-1):void 0===l[1]?d=-2:(d=o.lastIndex-l[2].length,a=l[1],o=void 0===l[3]?T:'"'===l[3]?P:M):o===P||o===M?o=T:o===C||o===L?o=S:(o=T,n=void 0);const p=o===T&&t[e+1].startsWith("/>")?" ":"";r+=o===S?i+$:d>=0?(s.push(a),i.slice(0,d)+"$lit$"+i.slice(d)+k+p):i+k+(-2===d?(s.push(void 0),e):p)}const a=r+(t[i]||"<?>")+(2===e?"</svg>":"");if(!Array.isArray(t)||!t.hasOwnProperty("raw"))throw Error("invalid template strings array");return[void 0!==y?y.createHTML(a):a,s]};class O{constructor({strings:t,_$litType$:e},i){let s;this.parts=[];let n=0,r=0;const o=t.length-1,a=this.parts,[l,d]=X(t,e);if(this.el=O.createElement(l,i),D.currentNode=this.el.content,2===e){const t=this.el.content,e=t.firstChild;e.remove(),t.append(...e.childNodes)}for(;null!==(s=D.nextNode())&&a.length<o;){if(1===s.nodeType){if(s.hasAttributes()){const t=[];for(const e of s.getAttributeNames())if(e.endsWith("$lit$")||e.startsWith(k)){const i=d[r++];if(t.push(e),void 0!==i){const t=s.getAttribute(i.toLowerCase()+"$lit$").split(k),e=/([.?@])?(.*)/.exec(i);a.push({type:1,index:n,name:e[2],strings:t,ctor:"."===e[1]?W:"?"===e[1]?V:"@"===e[1]?Z:q})}else a.push({type:6,index:n})}for(const e of t)s.removeAttribute(e)}if(I.test(s.tagName)){const t=s.textContent.split(k),e=t.length-1;if(e>0){s.textContent=w?w.emptyScript:"";for(let i=0;i<e;i++)s.append(t[i],z()),D.nextNode(),a.push({type:2,index:++n});s.append(t[e],z())}}}else if(8===s.nodeType)if(s.data===_)a.push({type:2,index:n});else{let t=-1;for(;-1!==(t=s.data.indexOf(k,t+1));)a.push({type:7,index:n}),t+=k.length-1}n++}}static createElement(t,e){const i=E.createElement("template");return i.innerHTML=t,i}}function Y(t,e,i=t,s){var n,r,o,a;if(e===H)return e;let l=void 0!==s?null===(n=i._$Co)||void 0===n?void 0:n[s]:i._$Cl;const d=A(e)?void 0:e._$litDirective$;return(null==l?void 0:l.constructor)!==d&&(null===(r=null==l?void 0:l._$AO)||void 0===r||r.call(l,!1),void 0===d?l=void 0:(l=new d(t),l._$AT(t,i,s)),void 0!==s?(null!==(o=(a=i)._$Co)&&void 0!==o?o:a._$Co=[])[s]=l:i._$Cl=l),void 0!==l&&(e=Y(t,l._$AS(t,e.values),l,s)),e}class F{constructor(t,e){this.u=[],this._$AN=void 0,this._$AD=t,this._$AM=e}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}v(t){var e;const{el:{content:i},parts:s}=this._$AD,n=(null!==(e=null==t?void 0:t.creationScope)&&void 0!==e?e:E).importNode(i,!0);D.currentNode=n;let r=D.nextNode(),o=0,a=0,l=s[0];for(;void 0!==l;){if(o===l.index){let e;2===l.type?e=new J(r,r.nextSibling,this,t):1===l.type?e=new l.ctor(r,l.name,l.strings,this,t):6===l.type&&(e=new K(r,this,t)),this.u.push(e),l=s[++a]}o!==(null==l?void 0:l.index)&&(r=D.nextNode(),o++)}return n}p(t){let e=0;for(const i of this.u)void 0!==i&&(void 0!==i.strings?(i._$AI(t,i,e),e+=i.strings.length-2):i._$AI(t[e])),e++}}class J{constructor(t,e,i,s){var n;this.type=2,this._$AH=U,this._$AN=void 0,this._$AA=t,this._$AB=e,this._$AM=i,this.options=s,this._$Cm=null===(n=null==s?void 0:s.isConnected)||void 0===n||n}get _$AU(){var t,e;return null!==(e=null===(t=this._$AM)||void 0===t?void 0:t._$AU)&&void 0!==e?e:this._$Cm}get parentNode(){let t=this._$AA.parentNode;const e=this._$AM;return void 0!==e&&11===t.nodeType&&(t=e.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,e=this){t=Y(this,t,e),A(t)?t===U||null==t||""===t?(this._$AH!==U&&this._$AR(),this._$AH=U):t!==this._$AH&&t!==H&&this.g(t):void 0!==t._$litType$?this.$(t):void 0!==t.nodeType?this.T(t):(t=>j(t)||"function"==typeof(null==t?void 0:t[Symbol.iterator]))(t)?this.k(t):this.g(t)}O(t,e=this._$AB){return this._$AA.parentNode.insertBefore(t,e)}T(t){this._$AH!==t&&(this._$AR(),this._$AH=this.O(t))}g(t){this._$AH!==U&&A(this._$AH)?this._$AA.nextSibling.data=t:this.T(E.createTextNode(t)),this._$AH=t}$(t){var e;const{values:i,_$litType$:s}=t,n="number"==typeof s?this._$AC(t):(void 0===s.el&&(s.el=O.createElement(s.h,this.options)),s);if((null===(e=this._$AH)||void 0===e?void 0:e._$AD)===n)this._$AH.p(i);else{const t=new F(n,this),e=t.v(this.options);t.p(i),this.T(e),this._$AH=t}}_$AC(t){let e=B.get(t.strings);return void 0===e&&B.set(t.strings,e=new O(t)),e}k(t){j(this._$AH)||(this._$AH=[],this._$AR());const e=this._$AH;let i,s=0;for(const n of t)s===e.length?e.push(i=new J(this.O(z()),this.O(z()),this,this.options)):i=e[s],i._$AI(n),s++;s<e.length&&(this._$AR(i&&i._$AB.nextSibling,s),e.length=s)}_$AR(t=this._$AA.nextSibling,e){var i;for(null===(i=this._$AP)||void 0===i||i.call(this,!1,!0,e);t&&t!==this._$AB;){const e=t.nextSibling;t.remove(),t=e}}setConnected(t){var e;void 0===this._$AM&&(this._$Cm=t,null===(e=this._$AP)||void 0===e||e.call(this,t))}}class q{constructor(t,e,i,s,n){this.type=1,this._$AH=U,this._$AN=void 0,this.element=t,this.name=e,this._$AM=s,this.options=n,i.length>2||""!==i[0]||""!==i[1]?(this._$AH=Array(i.length-1).fill(new String),this.strings=i):this._$AH=U}get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}_$AI(t,e=this,i,s){const n=this.strings;let r=!1;if(void 0===n)t=Y(this,t,e,0),r=!A(t)||t!==this._$AH&&t!==H,r&&(this._$AH=t);else{const s=t;let o,a;for(t=n[0],o=0;o<n.length-1;o++)a=Y(this,s[i+o],e,o),a===H&&(a=this._$AH[o]),r||(r=!A(a)||a!==this._$AH[o]),a===U?t=U:t!==U&&(t+=(null!=a?a:"")+n[o+1]),this._$AH[o]=a}r&&!s&&this.j(t)}j(t){t===U?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,null!=t?t:"")}}class W extends q{constructor(){super(...arguments),this.type=3}j(t){this.element[this.name]=t===U?void 0:t}}const G=w?w.emptyScript:"";class V extends q{constructor(){super(...arguments),this.type=4}j(t){t&&t!==U?this.element.setAttribute(this.name,G):this.element.removeAttribute(this.name)}}class Z extends q{constructor(t,e,i,s,n){super(t,e,i,s,n),this.type=5}_$AI(t,e=this){var i;if((t=null!==(i=Y(this,t,e,0))&&void 0!==i?i:U)===H)return;const s=this._$AH,n=t===U&&s!==U||t.capture!==s.capture||t.once!==s.once||t.passive!==s.passive,r=t!==U&&(s===U||n);n&&this.element.removeEventListener(this.name,this,s),r&&this.element.addEventListener(this.name,this,t),this._$AH=t}handleEvent(t){var e,i;"function"==typeof this._$AH?this._$AH.call(null!==(i=null===(e=this.options)||void 0===e?void 0:e.host)&&void 0!==i?i:this.element,t):this._$AH.handleEvent(t)}}class K{constructor(t,e,i){this.element=t,this.type=6,this._$AN=void 0,this._$AM=e,this.options=i}get _$AU(){return this._$AM._$AU}_$AI(t){Y(this,t)}}const Q=x.litHtmlPolyfillSupport;var tt,et;null==Q||Q(O,J),(null!==(b=x.litHtmlVersions)&&void 0!==b?b:x.litHtmlVersions=[]).push("2.6.1");class it extends v{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){var t,e;const i=super.createRenderRoot();return null!==(t=(e=this.renderOptions).renderBefore)&&void 0!==t||(e.renderBefore=i.firstChild),i}update(t){const e=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(t),this._$Do=((t,e,i)=>{var s,n;const r=null!==(s=null==i?void 0:i.renderBefore)&&void 0!==s?s:e;let o=r._$litPart$;if(void 0===o){const t=null!==(n=null==i?void 0:i.renderBefore)&&void 0!==n?n:null;r._$litPart$=o=new J(e.insertBefore(z(),t),t,void 0,null!=i?i:{})}return o._$AI(t),o})(e,this.renderRoot,this.renderOptions)}connectedCallback(){var t;super.connectedCallback(),null===(t=this._$Do)||void 0===t||t.setConnected(!0)}disconnectedCallback(){var t;super.disconnectedCallback(),null===(t=this._$Do)||void 0===t||t.setConnected(!1)}render(){return H}}it.finalized=!0,it._$litElement$=!0,null===(tt=globalThis.litElementHydrateSupport)||void 0===tt||tt.call(globalThis,{LitElement:it});const st=globalThis.litElementPolyfillSupport;var nt;null==st||st({LitElement:it}),(null!==(et=globalThis.litElementVersions)&&void 0!==et?et:globalThis.litElementVersions=[]).push("3.2.2"),null===(nt=window.HTMLSlotElement)||void 0===nt||nt.prototype.assignedElements,console.warn("The main 'lit-element' module entrypoint is deprecated. Please update your imports to use the 'lit' package: 'lit' and 'lit/decorators.ts' or import from 'lit-element/lit-element.ts'. See https://lit.dev/msg/deprecated-import-path for more information.");const rt="#000000",ot="#f5f5f5",at="#e5e5e5",lt="#c5c5c5",dt="#f5f5f5",ct="#939caa",pt="#eeeeee",ht="#262d35",gt="#384b64",mt="#F073C8",ut="#7e04e8",ft="#ffffff",vt="#f6f6f6",bt="#edeff1",xt="#a8a8a9",wt="linear-gradient(90deg, #f073c8 0%, #ff6a95 99%)",yt="linear-gradient(90deg, #ffffff 0%, #f6f6f6 99%)",kt=a`
   .intro-section {
     width: 100%;
     height: 100%;
@@ -30,7 +30,7 @@
 
   .download-resume {
     margin-left: 1rem;
-    color: ${r(rt)};
+    color: ${o(rt)};
     text-decoration: none;
     text-decoration: underline;
   }
@@ -63,12 +63,16 @@
   }
 
   #insideShadow{
-    color: ${r(pt)};
+    font-size: 4rem;
+    font-weight: 900;
+    background: -webkit-linear-gradient(90deg, ${o(lt)} 0%, ${o(at)} 100%);
+    -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
     margin: 0;
   }
 
   .intro-text p{
-    color: ${r(rt)};
+    color: ${o(rt)};
     letter-spacing: 1px;
     line-height: 2em;
     text-align: center;
@@ -110,6 +114,9 @@
       margin-top: 2rem;
     }
     #insideShadow{
+      background: -webkit-linear-gradient(90deg, ${o(gt)} 0%, ${o(ht)} 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
       font-size: 3.5rem;
     }
     .intro-text p {
@@ -124,7 +131,7 @@
 
   }
   
-`;let kt=yt;window.addEventListener("resize",(()=>{kt=yt})),customElements.define("cn-animationtext",class extends it{constructor(){super(),this.animationText='["Kreativitet", "Problemlösning", "Systemutveckling", "Visualisering"]'}updated(){this.#t()}static properties={animationText:{type:String}};render(){return N`
+`;let _t=kt;window.addEventListener("resize",(()=>{_t=kt})),customElements.define("cn-animationtext",class extends it{constructor(){super(),this.animationText='["Kreativitet", "Problemlösning", "Systemutveckling", "Visualisering"]'}updated(){this.#t()}static properties={animationText:{type:String}};render(){return R`
       <style>
         ${this.animationTextCss()}
       </style>
@@ -156,7 +163,7 @@
       #txt-rotate {
         border-right: 4px solid red;
       }
-    `}#t(){var t=function(t,e,i){this.toRotate=e,this.el=t,this.loopNum=0,this.period=parseInt(i,10)||1e3,this.txt="",this.tick(),this.isDeleting=!1};t.prototype.tick=function(){var t=this.loopNum%this.toRotate.length,e=this.toRotate[t];this.isDeleting?this.txt=e.substring(0,this.txt.length-1):this.txt=e.substring(0,this.txt.length+1),this.el.innerHTML='<span class="wrap">'+this.txt+"</span>";var i=this,s=200-100*Math.random();this.isDeleting&&(s/=2),this.isDeleting||this.txt!==e?this.isDeleting&&""===this.txt&&(this.isDeleting=!1,this.loopNum++,s=200):(s=this.period,this.isDeleting=!0),setTimeout((function(){i.tick()}),s)},setTimeout((()=>{var e=this.shadowRoot.getElementById("txt-rotate");this.shadowRoot.getElementById("animated-textt").style.cssText="opacity: 1; transition: 0.3s; animation: deley 0.5s fade-in";var i=e.getAttribute("data-rotate"),s=e.getAttribute("data-period");i&&new t(e,JSON.parse(i),s)}),0)}});const _t=a`
+    `}#t(){var t=function(t,e,i){this.toRotate=e,this.el=t,this.loopNum=0,this.period=parseInt(i,10)||1e3,this.txt="",this.tick(),this.isDeleting=!1};t.prototype.tick=function(){var t=this.loopNum%this.toRotate.length,e=this.toRotate[t];this.isDeleting?this.txt=e.substring(0,this.txt.length-1):this.txt=e.substring(0,this.txt.length+1),this.el.innerHTML='<span class="wrap">'+this.txt+"</span>";var i=this,s=200-100*Math.random();this.isDeleting&&(s/=2),this.isDeleting||this.txt!==e?this.isDeleting&&""===this.txt&&(this.isDeleting=!1,this.loopNum++,s=200):(s=this.period,this.isDeleting=!0),setTimeout((function(){i.tick()}),s)},setTimeout((()=>{var e=this.shadowRoot.getElementById("txt-rotate");this.shadowRoot.getElementById("animated-textt").style.cssText="opacity: 1; transition: 0.3s; animation: deley 0.5s fade-in";var i=e.getAttribute("data-rotate"),s=e.getAttribute("data-period");i&&new t(e,JSON.parse(i),s)}),0)}});const $t=a`
   .socialmedia {
     display: flex;
     justify-content: center;
@@ -198,9 +205,9 @@
     }
 
   }
-`;let $t=_t;window.addEventListener("resize",(()=>{$t=_t})),customElements.define("cn-socialmedia",class extends it{constructor(){super()}render(){return N`
+`;let Et=$t;window.addEventListener("resize",(()=>{Et=$t})),customElements.define("cn-socialmedia",class extends it{constructor(){super()}render(){return R`
       <style>
-        ${$t}
+        ${Et}
       </style>
       <div class="socialmedia">
         <a
@@ -218,7 +225,7 @@
           ><img src="./sourcefile/icons/github.svg"
         /></a>
       </div>
-    `}});const Et=a`
+    `}});const zt=a`
   .specialbtn {
     width: 100%;
     height: 1px;
@@ -291,7 +298,7 @@
       margin-left: -10px;
     }
   }
-`;let zt=Et;window.addEventListener("resize",(()=>{zt=Et})),customElements.define("cn-specialbutton",class extends it{static get styles(){return zt}constructor(){super(),this.buttonName="Works",this.radius="border-radius: 5px;",this.background=`${xt}`,this.textColor=`${ut}`}static properties={buttonName:{type:String},background:{type:String},textColor:{type:String},direction:{type:String},radius:{type:String}};render(){return N`
+`;let At=zt;window.addEventListener("resize",(()=>{At=zt})),customElements.define("cn-specialbutton",class extends it{static get styles(){return At}constructor(){super(),this.buttonName="Works",this.radius="border-radius: 5px;",this.background=`${wt}`,this.textColor=`${ft}`}static properties={buttonName:{type:String},background:{type:String},textColor:{type:String},direction:{type:String},radius:{type:String}};render(){return R`
 
       <div class="specialbtn" id="btnWraper">
         <a
@@ -299,7 +306,7 @@
           id="btn"
           style="background: ${this.background}; ${this.radius}; color: ${this.textColor};"
           class="animework btnWorks"
-          >${"left"===this.direction?N`
+          >${"left"===this.direction?R`
                 <svg
                   style="transform: rotate(180deg); fill: ${this.textColor}; opacity: 1;;"
                   class="btn-vct"
@@ -320,7 +327,7 @@
                   />
                 </svg>
                 ${this.buttonName}
-              `:N` ${this.buttonName}
+              `:R` ${this.buttonName}
                 <svg
                   style="fill: ${this.textColor};"
                   class="btn-vct"
@@ -342,7 +349,7 @@
                 </svg>`}
         </a>
       </div>
-    `}});const At=a`
+    `}});const jt=a`
   .scroll {
     position: absolute;
     bottom: 10px;
@@ -354,7 +361,7 @@
   }
 
   .text-scroll {
-    color: ${r(rt)};
+    color: ${o(rt)};
     letter-spacing: 1px;
     line-height: 2em;
     transform: rotate(90deg);
@@ -378,9 +385,9 @@
       transform: translateY(0px);
     }
   }
-`;customElements.define("cn-scroll-down",class extends it{constructor(){super()}render(){return N`
+`;customElements.define("cn-scroll-down",class extends it{constructor(){super()}render(){return R`
         <style>
-            ${At}
+            ${jt}
         </style>
         <div class="scroll">
           <p class="text-scroll">Skrolla ner</p>
@@ -389,8 +396,8 @@
           /></a>
         </div>
     `}}),customElements.define("cn-about",class extends it{constructor(){super(),this.Rellax=null}static get styles(){return a`
-      ${kt}
-      `}#e=null;set ic(t){this.#e=t,this.requestUpdate()}updated(){this.#i()}render(){const t=this.#e;if(null!==t)return N`
+      ${_t}
+      `}#e=null;set ic(t){this.#e=t,this.requestUpdate()}render(){const t=this.#e;if(null!==t)return R`
       <div class="intro-section">
         <div class="details-intro-sec">
     
@@ -400,7 +407,7 @@
       
             <div class="intro-text">
               <p>
-                Jag är en software engineer student och fullstack-utvecklare med
+                Jag är en software engineer student med
                 flera års erfarenhet av att skapa och utveckla nya idéer och
                 produkter från start till mål. Jag har en stark förmåga och är
                 van att arbeta med flera plattformar och teknologier. Mitt CV ->
@@ -414,7 +421,7 @@
             </div>
             <div class="btn-open-contact">
               <!-- special work btn -->
-              <cn-specialbutton @click=${()=>t("home","works")} buttonName="Works" textColor=${ut}></cn-specialbutton>
+              <cn-specialbutton @click=${()=>t("home","works")} buttonName="Works" textColor=${ft}></cn-specialbutton>
               <!-- social media component -->
               <div class="socialmedia-warp">
                 <cn-socialmedia></cn-socialmedia>
@@ -426,10 +433,10 @@
       <!-- scroll down
       <cn-scroll-down></cn-scroll-down>
       -->
-    `}#i(){const t=this.shadowRoot.getElementById("3d-active");ot.init(t,{max:25,speed:400})}});const jt=a`
+    `}});const St=a`
 
 .footer{
-    border-top: 1px solid ${r(lt)};
+    border-top: 1px solid ${o(at)};
     height: 80vh;
     display: flex;
     justify-content: center;
@@ -459,7 +466,8 @@
 }
 
 .footer-text h1{
-    margin-bottom: 1rem;
+
+    color: ${o(gt)};
 }
 /*  form */
 
@@ -472,7 +480,7 @@
 
 }
 .desc-footer-text{
-    color: ${r(rt)};
+    color: ${o(rt)};
     letter-spacing: 1px;
     line-height: 2em;
 }
@@ -561,7 +569,7 @@
     bottom: 17%;
     left: 2%;
     color: var(--whiteCC);
-    /* color: ${r(rt)}; */
+    /* color: ${o(rt)}; */
     font-weight: 300;
 }
 .password label span{
@@ -621,7 +629,7 @@
     justify-content: flex-start;
     align-items: flex-start;
     font-size: 1em;
-    color: ${r(rt)};
+    color: ${o(rt)};
 }
 
 
@@ -635,8 +643,8 @@
     align-items: center;
 }
 .btnFooter{
-    background: ${r(lt)};
-    color: ${r(rt)};
+    background: ${o(at)};
+    color: ${o(rt)};
     border: none;
     outline: none;
     width: auto;
@@ -652,8 +660,8 @@
 .btnFooter:hover,
 .btnFooter:focus,
 .btnFooter:active{
-    background: ${r(at)};
-    color: ${r(mt)};
+    background: ${o(ot)};
+    color: ${o(ut)};
     transition: 0.3s;
 }
 
@@ -669,11 +677,11 @@
     align-items: center;
 }
 .info-footer h1{
-    color: ${r(rt)};
+    color: ${o(rt)};
     margin: 1em 0;
 }
 .info-footer p{
-    color: ${r(rt)};
+    color: ${o(rt)};
     margin-bottom: 0.5em;
     margin-top: 1rem;
 
@@ -681,7 +689,7 @@
 .btnGithub-footer{
     padding: 0.4rem 2rem;
     font-size: 1.2rem;
-    color: ${r(rt)};
+    color: ${o(rt)};
     transition: 0.3s;
 }
 .btnGithub-footer:hover{
@@ -695,7 +703,7 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
-    color: ${r(rt)};
+    color: ${o(rt)};
     margin-top: 1rem;
     margin-bottom: 0;
 }
@@ -777,7 +785,7 @@
         width: 100%;
       }
       .info-footer p {
-        color: ${r(rt)};
+        color: ${o(rt)};
         text-decoration: none;
         font-size: 2rem;
       }
@@ -786,7 +794,7 @@
         font-size: 2.5rem;
       }
       .footer-text h1 {
-        color: ${r(pt)};
+        color: ${o(gt)};
         font-size: 6rem;
       }
 
@@ -815,9 +823,9 @@
     }
 
 
-`;let St=jt;window.addEventListener("resize",(()=>{St=jt})),customElements.define("cn-footer",class extends it{static get styles(){return a`
-      ${St}
-    `}constructor(){super()}render(){return N`
+`;let Ct=St;window.addEventListener("resize",(()=>{Ct=St})),customElements.define("cn-footer",class extends it{static get styles(){return a`
+      ${Ct}
+    `}constructor(){super()}render(){return R`
       <div id="footer" class="footer">
         <div class="bg-footer">
           <div class="intro-footer">
@@ -886,11 +894,11 @@
             </div>
           </div>
           <div class="footer-developed">
-            <p>Developed | 2023 &copy; khabib</p>
+            <p>Developed | 2023 &copy; khabib.  All rights reserved.</p>
           </div>
         </div>
       </div>
-    `}});const Ct=a`
+    `}});const Lt=a`
   .bg-ddd-prj {
     height: fit-content;
     padding: 5rem 00;
@@ -915,7 +923,7 @@
   }
  
   #primary-title-sections {
-    color: ${r(pt)};
+    color: ${o(gt)};
     font-size: 3rem;
   }
   
@@ -925,7 +933,7 @@
     width: 100%;
     display: flex;
     justify-content: space-around;
-    background: ${r(vt)};
+    background: ${o(bt)};
     align-items: center;
     flex-direction: column;
     text-decoration: none;
@@ -936,7 +944,7 @@
   }
 
   .each:hover {
-    background: ${r(ut)};
+    background: ${o(ft)};
   }
 
   .detailes-ddd-prj {
@@ -960,7 +968,7 @@
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    background-color: ${r(ft)};
+    background-color: ${o(vt)};
     display: flex;
     justify-content: center;
     align-items: center;
@@ -968,7 +976,7 @@
   .detailes-ddd-prj h1 {
     font-weight: 800;
     font-size: 1.5rem;
-    color: ${r(ct)};
+    color: ${o(ct)};
     border-radius: 5px;
     text-decoration: none;
     padding: 0 1rem;
@@ -1015,18 +1023,18 @@
 
 
     }
-`;let Tt=Ct;window.addEventListener("resize",(()=>{Tt=Ct})),customElements.define("cn-services",class extends it{static get styles(){return a`
+`;let Tt=Lt;window.addEventListener("resize",(()=>{Tt=Lt})),customElements.define("cn-services",class extends it{static get styles(){return a`
       ${Tt}
-    `}constructor(){super()}galleryCategories=[{category:"UI/UX",img:"./sourcefile/services/uiux.png"},{category:"Software",img:"./sourcefile/services/web.png"},{category:"E-sport",img:"./sourcefile/services/e-sport.png"},{category:"Graphic",img:"./sourcefile/services/gfx.png"}];#s=null;set ic(t){this.#s=t,this.requestUpdate()}render(){return N`
+    `}constructor(){super()}galleryCategories=[{category:"UI/UX",img:"./sourcefile/services/uiux.png"},{category:"Software",img:"./sourcefile/services/web.png"},{category:"E-sport",img:"./sourcefile/services/e-sport.png"},{category:"Graphic",img:"./sourcefile/services/gfx.png"}];#i=null;set ic(t){this.#i=t,this.requestUpdate()}render(){return R`
       <div class="bg-ddd-prj">
         <div class="intro-ddd-prj">
           <div class="overline-primary-title-sections"></div>
           <h1 id="primary-title-sections">Tjänster</h1>
         </div>
         <div class="items-ddd-prj">
-          ${this.galleryCategories.map((t=>N`
+          ${this.galleryCategories.map((t=>R`
               <a
-                @click=${()=>this.#s("gallery",t.category)}
+                @click=${()=>this.#i("gallery",t.category)}
                 class="ui-intro-icon each rellax"
                 data-rellax-mobile-speed="-0.1"
                 data-rellax-speed="-0.5"
@@ -1041,7 +1049,7 @@
             `))}
         </div>
       </div>
-    `}});const Lt=a`
+    `}});var Mt=i(662);const Pt=a`
   .s-one {
     width: 60%;
   }
@@ -1049,7 +1057,7 @@
 
   #primary-title-sections {
     font-size: 3rem;
-    color: ${r(pt)};
+    color: ${o(gt)};
   }
 
 
@@ -1066,7 +1074,7 @@
 
   .project-wraper {
     display: flex;
-    background: ${r(vt)};
+    background: ${o(bt)};
     border-radius: 15px;
     display: flex;
     justify-content: space-between;
@@ -1080,7 +1088,7 @@
   }
 
   .project-wraper:hover {
-    background: ${r(ut)};
+    background: ${o(ft)};
   }
 
   .project-text {
@@ -1097,13 +1105,13 @@
 
   .project-text h1 {
     font-size: 2rem;
-    color: ${r(ct)};
+    color: ${o(ct)};
   }
   
   .project-text p {
     font-size: 1rem;
     margin: 0;
-    color: ${r(ct)};
+    color: ${o(ct)};
   }
 
   .project-btns {
@@ -1122,7 +1130,7 @@
   }
 
   
-  .project-wraper:last-child .works-img {
+  .project-wraper:nth-child(3) .works-img {
     height: 100%;
     width: auto;
   }
@@ -1144,9 +1152,9 @@
 
   .project-text {
     text-align: left;
-    width: 90%;
+    width: 80%;
     border-radius: 10px;
-    background: ${r(ht)};
+    background: ${o(pt)};
   }
   
   .project-img {
@@ -1186,6 +1194,7 @@
   }
 
   .project-text h1 {
+    color: ${o(gt)};
     font-size: 3rem;
   }
 
@@ -1197,15 +1206,15 @@
 
 
 
-`;let Mt=Lt;window.addEventListener("resize",(()=>{Mt=Lt})),customElements.define("cn-works",class extends it{static get styles(){return a`
-      ${Mt}
-    `}constructor(){super()}#e=null;set ic(t){this.#e=t,this.requestUpdate()}render(){const t=this.#e;if(!t)return;const e=t.getShowCases();return N`
+`;let It=Pt;window.addEventListener("resize",(()=>{It=Pt})),customElements.define("cn-works",class extends it{static get styles(){return a`
+      ${It}
+    `}updated(){this.#s()}constructor(){super()}#e=null;set ic(t){this.#e=t,this.requestUpdate()}render(){const t=this.#e;if(!t)return;const e=t.getShowCases();return R`
       <section id="works" class="s-one">
         <div class="intro-text-s-one">
           <h1 id="primary-title-sections">Tidigare arbete</h1>
         </div>
         <div class="intro-project">
-        ${e.map((e=>N`
+        ${e.map((e=>R`
             <div
             class="project-wraper"
             @click=${()=>t.getPageNavigator("work",e.navigateTo)}
@@ -1218,8 +1227,8 @@
                 <div class="project-btns">
                   <cn-specialbutton
                     buttonName="Läs mer om projektet"
-                    textColor=${rt}
-                    background=${wt}
+                    textColor=${gt}
+                    background=${yt}
                   ></cn-specialbutton>
                 </div>
               </div>
@@ -1235,7 +1244,7 @@
             `))}
           </div>
       </section>
-    `}});const Pt=a`
+    `}#s(){this.shadowRoot.querySelectorAll(".project-wraper").forEach((t=>{Mt.init(t,{max:10,speed:400})}))}});const Nt=a`
 :root {
   --z-distance: 8.519vw;
   --from-left: 1;
@@ -1610,18 +1619,18 @@
 }
 
 
-`,Rt=Pt;window.addEventListener("resize",(()=>{Rt.innerHTML=Pt})),customElements.define("cn-bild",class extends it{static styles=Rt;constructor(){super()}updated(){null!==this.#e&&this.#n()}firstUpdated(){null!==this.#e&&(this.shadowRoot.querySelectorAll(".slider__text-item")[0].classList.add("slider__text-item--active"),this.shadowRoot.querySelectorAll(".slider__images-item")[0].classList.add("slider__images-item--active"),this.shadowRoot.querySelectorAll(".slider__nav-dot")[0].classList.add("slider__nav-dot--active"))}#e=null;set ic(t){this.#e=t,this.requestUpdate()}render(){const t=this.#e;if(null===t)return;const e=t.from,i=t.imgs;return N`
+`,Rt=Nt;window.addEventListener("resize",(()=>{Rt.innerHTML=Nt})),customElements.define("cn-bild",class extends it{static styles=Rt;constructor(){super()}updated(){null!==this.#e&&this.#n()}firstUpdated(){null!==this.#e&&(this.shadowRoot.querySelectorAll(".slider__text-item")[0].classList.add("slider__text-item--active"),this.shadowRoot.querySelectorAll(".slider__images-item")[0].classList.add("slider__images-item--active"),this.shadowRoot.querySelectorAll(".slider__nav-dot")[0].classList.add("slider__nav-dot--active"))}#e=null;set ic(t){this.#e=t,this.requestUpdate()}render(){const t=this.#e;if(null===t)return;const e=t.from,i=t.imgs;return R`
     <div class="slider" id="slider" style="--img-prev:url(${this.#e.imgs[0].src});"> 
   <div class="slider__content" id="slider-content">
     <div class="slider__images">
-    ${i.map(((t,e)=>N`
+    ${i.map(((t,e)=>R`
         <div class="slider__images-item" data-id="${e+1}"> 
           <img src="${t.src}" alt="${null==t.description?"":t.description}"/>
         </div>
       `))}
       </div>
     <div class="slider__text">
-      ${i.map(((t,e)=>N`
+      ${i.map(((t,e)=>R`
           <div class="slider__text-item" data-id="${e+1}">
             <div class="slider__text-item-head">
               <h3>${null!==t.title?t.title:""}</h3>
@@ -1639,7 +1648,7 @@
       <div class="slider__nav-arrow slider__nav-arrow--right" id="right">to right</div>
     </div>
     <div class="slider__nav-dots" id="slider-dots">
-     ${i.map(((t,e)=>N`
+     ${i.map(((t,e)=>R`
             <div class="slider__nav-dot" data-id="${e+1}"></div>
           `))}
     </div>
@@ -1661,19 +1670,19 @@
     
     
     
-    `}#n(){const t=this.shadowRoot.getElementById("slider"),e=new class{#o;larg;constructor(t,e,i){this.#o=e,this.larg=i;const s=this.IMG_CLASS="slider__images-item",n=this.TEXT_CLASS="slider__text-item",o=this.ACTIVE_IMG_CLASS=`${s}--active`,r=this.ACTIVE_TEXT_CLASS=`${n}--active`;this.el=t,this.contentEl=e.getElementById("slider-content"),this.onMouseMove=this.onMouseMove.bind(this),this.activeImg=t.getElementsByClassName(o),this.activeText=t.getElementsByClassName(r),this.images=t.getElementsByTagName("img"),e.getElementById("slider-dots").addEventListener("click",this.onDotClick.bind(this)),e.getElementById("left").addEventListener("click",this.prev.bind(this)),e.getElementById("right").addEventListener("click",this.next.bind(this)),window.addEventListener("resize",this.onResize.bind(this)),this.onResize(),this.length=this.images.length,this.lastX=this.lastY=this.targetX=this.targetY=0}onResize(){const t=getComputedStyle(document.documentElement),e=t.getPropertyValue("--mobile-bkp"),i=this.isMobile=matchMedia(`only screen and (max-width: ${e})`).matches;this.halfWidth=innerWidth/2,this.halfHeight=innerHeight/2,this.zDistance=t.getPropertyValue("--z-distance"),i||this.mouseWatched?i&&this.mouseWatched&&(this.mouseWatched=!1,this.el.removeEventListener("mousemove",this.onMouseMove),this.contentEl.style.setProperty("transform","none")):(this.mouseWatched=!0,this.el.addEventListener("mousemove",this.onMouseMove),this.el.style.setProperty("--img-prev",`url(${this.images[+this.activeImg[0].dataset.id-1].src})`),this.contentEl.style.setProperty("transform",`translateZ(${this.zDistance})`))}getMouseCoefficients({pageX:t,pageY:e}={}){const i=this.halfWidth,s=this.halfHeight;return{xCoeff:((t||this.targetX)-i)/i,yCoeff:(s-(e||this.targetY))/s}}onMouseMove({pageX:t,pageY:e}){this.targetX=t,this.targetY=e,this.animationRunning||(this.animationRunning=!0,this.runAnimation())}runAnimation(){if(this.animationStopped)return void(this.animationRunning=!1);const t=function({x:t,y:e},{x:i,y:s}){return{x:t+=.1*(i-t),y:e+=.1*(s-e)}}({x:this.lastX,y:this.lastY},{x:this.targetX,y:this.targetY}),{xCoeff:e,yCoeff:i}=this.getMouseCoefficients({pageX:t.x,pageY:t.y});this.lastX=t.x,this.lastY=t.y,this.positionImage({xCoeff:e,yCoeff:i}),this.contentEl.style.setProperty("transform",`\n          translateZ(${this.zDistance})\n          rotateX(${10*i}deg)\n          rotateY(${10*e}deg)\n        `),this.reachedFinalPoint?this.animationRunning=!1:requestAnimationFrame(this.runAnimation.bind(this))}get reachedFinalPoint(){const t=~~this.lastX,e=~~this.lastY,i=this.targetX,s=this.targetY;return!(t!=i&&t-1!=i&&t+1!=i||e!=s&&e-1!=s&&e+1!=s)}positionImage({xCoeff:t,yCoeff:e}){this.activeImg[0].children[0].style.setProperty("transform",`\n          translateX(${1*-t}em)\n          translateY(${1*e}em)\n        `)}onDotClick({target:t}){if(this.inTransit)return;const e=t.closest(".slider__nav-dot");if(!e)return;const i=e.dataset.id;this.activeImg[0].dataset.id!=i&&this.startTransition(i)}transitionItem(t){function e(t){t.stopPropagation(),p.classList.remove(h),i.inTransit=!1,this.className=r,this.removeEventListener("transitionend",e)}const i=this,s=this.el,n=this.activeImg[0],o=n.dataset.id,r=this.IMG_CLASS,a=this.TEXT_CLASS,l=this.ACTIVE_IMG_CLASS,d=this.ACTIVE_TEXT_CLASS,c=`${r}--subactive`,h=`${r}--transit`,p=s.querySelector(`.${r}[data-id='${t}']`),g=s.querySelector(`.${a}[data-id='${t}']`);let m="",u="";this.animationStopped=!0,g.classList.add(d),s.style.setProperty("--from-left",t),n.classList.remove(l),n.classList.add(c),o<t?(m=`${r}--next`,u=`${r}--prev`):(m=`${r}--prev`,u=`${r}--next`),p.classList.add(m),requestAnimationFrame((()=>{p.classList.add(h,l),p.classList.remove(m),this.animationStopped=!1,this.positionImage(this.getMouseCoefficients()),n.classList.add(h,u),n.addEventListener("transitionend",e)})),this.isMobile||this.switchBackgroundImage(t)}startTransition(t){if(this.inTransit)return;const e=this.activeText[0],i=`${this.TEXT_CLASS}--backwards`,s=this;this.inTransit=!0,e.classList.add(i),e.classList.remove(this.ACTIVE_TEXT_CLASS),e.addEventListener("transitionend",(function e(i){i.pseudoElement||(i.stopPropagation(),requestAnimationFrame((()=>{s.transitionItem(t)})),this.removeEventListener("transitionend",e))})),requestAnimationFrame((()=>{e.classList.remove(i)}))}next(){if(this.inTransit)return;let t=+this.activeImg[0].dataset.id+1;t>this.length&&(t=1),this.startTransition(t)}prev(){if(this.inTransit)return;let t=+this.activeImg[0].dataset.id-1;t<1&&(t=this.length),this.startTransition(t)}switchBackgroundImage(t){const e="slider--bg-next",i=this.el,s=`url(${this.images[+t-1].src})`;i.style.setProperty("--img-next",s),i.addEventListener("transitionend",(function t(i){i.target===this&&(this.style.setProperty("--img-prev",s),this.classList.remove(e),this.removeEventListener("transitionend",t))})),i.classList.add(e)}}(t,this.shadowRoot);let i=0;function s(){clearTimeout(i),this.removeEventListener("touchstart",s),this.removeEventListener("mousemove",s)}t.addEventListener("mousemove",s),t.addEventListener("touchstart",s),i=setTimeout((function t(){requestAnimationFrame((()=>{e.next()})),i=setTimeout(t,5e3)}),2e3)}});class It extends it{static styles=a`
+    `}#n(){const t=this.shadowRoot.getElementById("slider"),e=new class{#r;larg;constructor(t,e,i){this.#r=e,this.larg=i;const s=this.IMG_CLASS="slider__images-item",n=this.TEXT_CLASS="slider__text-item",r=this.ACTIVE_IMG_CLASS=`${s}--active`,o=this.ACTIVE_TEXT_CLASS=`${n}--active`;this.el=t,this.contentEl=e.getElementById("slider-content"),this.onMouseMove=this.onMouseMove.bind(this),this.activeImg=t.getElementsByClassName(r),this.activeText=t.getElementsByClassName(o),this.images=t.getElementsByTagName("img"),e.getElementById("slider-dots").addEventListener("click",this.onDotClick.bind(this)),e.getElementById("left").addEventListener("click",this.prev.bind(this)),e.getElementById("right").addEventListener("click",this.next.bind(this)),window.addEventListener("resize",this.onResize.bind(this)),this.onResize(),this.length=this.images.length,this.lastX=this.lastY=this.targetX=this.targetY=0}onResize(){const t=getComputedStyle(document.documentElement),e=t.getPropertyValue("--mobile-bkp"),i=this.isMobile=matchMedia(`only screen and (max-width: ${e})`).matches;this.halfWidth=innerWidth/2,this.halfHeight=innerHeight/2,this.zDistance=t.getPropertyValue("--z-distance"),i||this.mouseWatched?i&&this.mouseWatched&&(this.mouseWatched=!1,this.el.removeEventListener("mousemove",this.onMouseMove),this.contentEl.style.setProperty("transform","none")):(this.mouseWatched=!0,this.el.addEventListener("mousemove",this.onMouseMove),this.el.style.setProperty("--img-prev",`url(${this.images[+this.activeImg[0].dataset.id-1].src})`),this.contentEl.style.setProperty("transform",`translateZ(${this.zDistance})`))}getMouseCoefficients({pageX:t,pageY:e}={}){const i=this.halfWidth,s=this.halfHeight;return{xCoeff:((t||this.targetX)-i)/i,yCoeff:(s-(e||this.targetY))/s}}onMouseMove({pageX:t,pageY:e}){this.targetX=t,this.targetY=e,this.animationRunning||(this.animationRunning=!0,this.runAnimation())}runAnimation(){if(this.animationStopped)return void(this.animationRunning=!1);const t=function({x:t,y:e},{x:i,y:s}){return{x:t+=.1*(i-t),y:e+=.1*(s-e)}}({x:this.lastX,y:this.lastY},{x:this.targetX,y:this.targetY}),{xCoeff:e,yCoeff:i}=this.getMouseCoefficients({pageX:t.x,pageY:t.y});this.lastX=t.x,this.lastY=t.y,this.positionImage({xCoeff:e,yCoeff:i}),this.contentEl.style.setProperty("transform",`\n          translateZ(${this.zDistance})\n          rotateX(${10*i}deg)\n          rotateY(${10*e}deg)\n        `),this.reachedFinalPoint?this.animationRunning=!1:requestAnimationFrame(this.runAnimation.bind(this))}get reachedFinalPoint(){const t=~~this.lastX,e=~~this.lastY,i=this.targetX,s=this.targetY;return!(t!=i&&t-1!=i&&t+1!=i||e!=s&&e-1!=s&&e+1!=s)}positionImage({xCoeff:t,yCoeff:e}){this.activeImg[0].children[0].style.setProperty("transform",`\n          translateX(${1*-t}em)\n          translateY(${1*e}em)\n        `)}onDotClick({target:t}){if(this.inTransit)return;const e=t.closest(".slider__nav-dot");if(!e)return;const i=e.dataset.id;this.activeImg[0].dataset.id!=i&&this.startTransition(i)}transitionItem(t){function e(t){t.stopPropagation(),h.classList.remove(p),i.inTransit=!1,this.className=o,this.removeEventListener("transitionend",e)}const i=this,s=this.el,n=this.activeImg[0],r=n.dataset.id,o=this.IMG_CLASS,a=this.TEXT_CLASS,l=this.ACTIVE_IMG_CLASS,d=this.ACTIVE_TEXT_CLASS,c=`${o}--subactive`,p=`${o}--transit`,h=s.querySelector(`.${o}[data-id='${t}']`),g=s.querySelector(`.${a}[data-id='${t}']`);let m="",u="";this.animationStopped=!0,g.classList.add(d),s.style.setProperty("--from-left",t),n.classList.remove(l),n.classList.add(c),r<t?(m=`${o}--next`,u=`${o}--prev`):(m=`${o}--prev`,u=`${o}--next`),h.classList.add(m),requestAnimationFrame((()=>{h.classList.add(p,l),h.classList.remove(m),this.animationStopped=!1,this.positionImage(this.getMouseCoefficients()),n.classList.add(p,u),n.addEventListener("transitionend",e)})),this.isMobile||this.switchBackgroundImage(t)}startTransition(t){if(this.inTransit)return;const e=this.activeText[0],i=`${this.TEXT_CLASS}--backwards`,s=this;this.inTransit=!0,e.classList.add(i),e.classList.remove(this.ACTIVE_TEXT_CLASS),e.addEventListener("transitionend",(function e(i){i.pseudoElement||(i.stopPropagation(),requestAnimationFrame((()=>{s.transitionItem(t)})),this.removeEventListener("transitionend",e))})),requestAnimationFrame((()=>{e.classList.remove(i)}))}next(){if(this.inTransit)return;let t=+this.activeImg[0].dataset.id+1;t>this.length&&(t=1),this.startTransition(t)}prev(){if(this.inTransit)return;let t=+this.activeImg[0].dataset.id-1;t<1&&(t=this.length),this.startTransition(t)}switchBackgroundImage(t){const e="slider--bg-next",i=this.el,s=`url(${this.images[+t-1].src})`;i.style.setProperty("--img-next",s),i.addEventListener("transitionend",(function t(i){i.target===this&&(this.style.setProperty("--img-prev",s),this.classList.remove(e),this.removeEventListener("transitionend",t))})),i.classList.add(e)}}(t,this.shadowRoot);let i=0;function s(){clearTimeout(i),this.removeEventListener("touchstart",s),this.removeEventListener("mousemove",s)}t.addEventListener("mousemove",s),t.addEventListener("touchstart",s),i=setTimeout((function t(){requestAnimationFrame((()=>{e.next()})),i=setTimeout(t,5e3)}),2e3)}});class Ht extends it{static styles=a`
   cn-works{
     display: flex;
     justify-content: center;
   }
 
-  `;constructor(){super()}#r=[{title:"JetStream - en flygbokningssystem applikation",description:"Ett fulländat flygbokningssystem för privatpersoner på desktop och webben",img:"./sourcefile/web/jetstream/works.png",navigateTo:"flygbokningssystem",link:""},{title:"Katalog till Utställningen Unga Forskare",description:"Some grafiskt ansvarig har jag skapat en katalog till utställningen Unga Forskare",img:"./sourcefile/gfx/uuf/magazine_2.png",navigateTo:"UUF",link:""},{title:"Online tidsbokningssystem",description:"Ett online tidsbokningssystem för små företag & fastighetsservice",img:"./sourcefile/web/obs/works.png",navigateTo:"Online tidsbokningssystem",link:""},{title:"Trafikverket + Spotify",description:"Trafik applikation tillsammans med Spotify för att kunna lyssna på musik under resan",img:"./sourcefile/web/skonetrafik_spotify/showCase.png",navigateTo:"Trafikverket + Spotify",link:""},{title:"Orbitz - en utbildningsapplikation",description:"En utbildningsapplikation till högstadietsstudenter för att utförska och lära sig om olika planeterna i solsystemet",img:"./sourcefile/web/orbitz/works.png",navigateTo:"Orbitz",link:""},{title:"Mat leverans app",description:"Ett prototype för en restaurang sök och leverans app",img:"./sourcefile/uiux/mockups/showCase.png",navigateTo:"Food Delivery App",link:""}];#s=null;set ic(t){this.#s=t,this.requestUpdate()}render(){const t={getPageNavigator:this.#s.bind(this),getShowCases:()=>this.#r};return N`
-        <cn-about .ic=${this.#s.bind(this)}></cn-about>
+  `;constructor(){super()}#o=[{title:"Katalog till Utställningen Unga Forskare",description:"Som grafiskt ansvarig har jag skapat en katalog till utställningen Unga Forskare",img:"./sourcefile/gfx/uuf/magazine_2.png",navigateTo:"Catalogue Design",link:""},{title:"JetStream - en flygbokningssystem",description:"Ett fullständigt flygbokningssystem, ALL IN ONE, för privatpersoner på desktop och webben",img:"./sourcefile/web/jetstream/works.png",navigateTo:"JetStream - en flygbokningssystem",link:""},{title:"Mat leverans app",description:"En prototyp för mat leverans app",img:"./sourcefile/uiux/mockups/showCase.png",navigateTo:"Food Delivery App",link:""},{title:"Trafikverket + Spotify - en kombinerad applikation och en RESTful API",description:"Trafik applikation tillsammans med Spotify för att kunna lyssna på musik under resan",img:"./sourcefile/web/skonetrafik_spotify/showCase+.png",navigateTo:"Trafikverket + Spotify - en kombinerad applikation och RESTful API",link:""},{title:"Booker - en online tidsbokningssystem",description:"Ett online tidsbokningssystem för små företag & fastighetsservice",img:"./sourcefile/web/obs/works.png",navigateTo:"Booker - en online tidsbokningssystem",link:""},{title:"Orbitz - en utbildningsapplikation",description:"En utbildningsapplikation till högstadietsstudenter för att utförska och lära sig om olika planeterna i solsystemet",img:"./sourcefile/web/orbitz/works.png",navigateTo:"Orbitz - en utbildningsapplikation",link:""}];#i=null;set ic(t){this.#i=t,this.requestUpdate()}render(){const t={getPageNavigator:this.#i.bind(this),getShowCases:()=>this.#o};return R`
+        <cn-about .ic=${this.#i.bind(this)}></cn-about>
         <cn-bild></cn-bild>
-        <cn-services .ic=${this.#s.bind(this)}></cn-services>
+        <cn-services .ic=${this.#i.bind(this)}></cn-services>
         <cn-works .ic=${t}></cn-works>
         <cn-footer></cn-footer>
-    `}}customElements.define("cn-overview",It);const Nt=a`
+    `}}customElements.define("cn-overview",Ht);const Ut=a`
 :host {
     display: block;
 }
@@ -1719,7 +1728,7 @@
     margin: 0;
     font-size: 1.2em;
     font-weight: 700;
-    color: ${r(rt)};
+    color: ${o(rt)};
     transition: 0.5s cubic-bezier(0.68, -0.85, 0.165, 2);
 }
 .logoUtl{
@@ -1766,7 +1775,7 @@
 }
 .tglline{
     margin: 3px;
-    background: ${r(bt)};
+    background: ${o(xt)};
     width: 28px;
     height: 4px;
     border-radius: 50px;
@@ -1789,7 +1798,7 @@
     width: 0;
     height: 0;
     opacity: 0;
-    background: ${r(ut)};
+    background: ${o(ft)};
     transition: 0.3s;
     border-radius: 5px;
     overflow: hidden;
@@ -1829,11 +1838,11 @@
     height: 100%;
     cursor: pointer;
     padding:0.8rem;
-    border-bottom: 1px solid ${r(lt)};
+    border-bottom: 1px solid ${o(at)};
     font-size: 1rem;
     font-weight: 500;
     text-decoration: none;
-    color: ${r(rt)};
+    color: ${o(rt)};
     transition: 0.2s;
 
 }
@@ -1871,7 +1880,7 @@
 
     .tglline{
         margin: 5px;
-        background: ${r(pt)};
+        background: ${o(gt)};
         width: 98px;
         height: 15px;
         border-radius: 50px;
@@ -1905,9 +1914,9 @@
 
 }
 
-`;let Ut=Nt;window.addEventListener("resize",(()=>{Ut=Nt}));class Ht extends it{static styles=a`
-    ${Ut}
-    `;constructor(){super()}#e=null;set ic(t){this.#e=t,this.requestUpdate()}updated(){this.#a()}render(){const t=this.#e;if(null!==t)return N`
+`;let Bt=Ut;window.addEventListener("resize",(()=>{Bt=Ut}));class Dt extends it{static styles=a`
+    ${Bt}
+    `;constructor(){super()}#e=null;set ic(t){this.#e=t,this.requestUpdate()}updated(){this.#a()}render(){const t=this.#e;if(null!==t)return R`
       <div class="header-container">
         <div id="screen" class="screen"></div>
         <div class="header-dtl">
@@ -1943,21 +1952,21 @@
 
 
       </div>
-    `}#a(){var t=this.shadowRoot.getElementById("tglBtn"),e=this.shadowRoot.getElementById("menu-container"),i=this.shadowRoot.querySelectorAll(".menu-link"),s=this.shadowRoot.getElementById("screen"),n=!0;s.addEventListener("click",(()=>{e.classList.remove("menu-open"),s.classList.remove("screendspd"),n=!0})),this.shadowRoot.addEventListener("click",(t=>{if("Om mig"==t.target.innerHTML||"Arbete"==t.target.innerHTML||"Kontaka mig"==t.target.innerHTML){i.forEach((t=>{t.classList.remove("active")})),t.target.classList.add("active"),t.target.style.cssText="",e.classList.remove("menu-open"),s.classList.remove("screendspd"),n=!0,t.preventDefault();const o=t.target.getAttribute("href"),r=document.getElementById(o);r&&r.scrollIntoView({behavior:"smooth"})}})),t.addEventListener("click",(()=>{1==n?(e.classList.add("menu-open"),s.classList.add("screendspd"),t.style.cssText="z-index: 5;",n=!1):0==n&&(s.classList.remove("screendspd"),e.classList.remove("menu-open"),t.style.cssText="z-index: 1;",n=!0)}))}}customElements.define("cn-header",Ht);const Ot=a`
+    `}#a(){var t=this.shadowRoot.getElementById("tglBtn"),e=this.shadowRoot.getElementById("menu-container"),i=this.shadowRoot.querySelectorAll(".menu-link"),s=this.shadowRoot.getElementById("screen"),n=!0;s.addEventListener("click",(()=>{e.classList.remove("menu-open"),s.classList.remove("screendspd"),n=!0})),this.shadowRoot.addEventListener("click",(t=>{if("Om mig"==t.target.innerHTML||"Arbete"==t.target.innerHTML||"Kontaka mig"==t.target.innerHTML){i.forEach((t=>{t.classList.remove("active")})),t.target.classList.add("active"),t.target.style.cssText="",e.classList.remove("menu-open"),s.classList.remove("screendspd"),n=!0,t.preventDefault();const r=t.target.getAttribute("href"),o=document.getElementById(r);o&&o.scrollIntoView({behavior:"smooth"})}})),t.addEventListener("click",(()=>{1==n?(e.classList.add("menu-open"),s.classList.add("screendspd"),t.style.cssText="z-index: 5;",n=!1):0==n&&(s.classList.remove("screendspd"),e.classList.remove("menu-open"),t.style.cssText="z-index: 1;",n=!0)}))}}customElements.define("cn-header",Dt);const Xt=a`
   .animated-things .shapes {
     position: absolute;
-    border-radius: 5px;
+    border-radius: 50%;
     overflow: hidden;
     width: 20px;
     height: 20px;
-    background: #edeff1;
+    background: linear-gradient(120deg, ${o(lt)} 0%, ${o(at)} 100%);
+    opacity: 0.5;
     z-index: 1;
   }
 
   .shape1 {
     width: 200px !important;
     height: 200px !important;
-    border-radius: 20px !important;
     opacity: 1;
     animation: shapeAroundHomw 10s infinite;
     top: 10%;
@@ -2001,6 +2010,7 @@
     width: 100px !important;
     height: 100px !important;
     border-radius: 20px !important;
+    filter: blur(5px);
     animation: shapeAroundHomw 5s infinite;
     top: 50%;
     left: 30%;
@@ -2014,6 +2024,22 @@
     animation: shapeAroundHomw 7s infinite;
     bottom: 10%;
   }
+  .shape51 {
+    animation: shapeAroundHomw 7s infinite;
+    bottom: 60%;
+    left: 70%;
+    width: 100px !important;
+    height: 100px !important;
+    border-radius: 20px !important;
+    filter: blur(5px);
+  }
+  .shape52 {
+    animation: shapeAroundHomw 7s infinite;
+    bottom: 50%;
+    left: 50%;
+    width: 60px !important;
+    height: 60px !important;
+  }
   .shape6 {
     animation: shapeAroundHomw 8s infinite;
     top: 0;
@@ -2023,6 +2049,7 @@
     opacity: 0.5;
     animation: shapeAroundHomw 9s infinite;
     top: 30%;
+    filter: blur(5px);
     right: 8%;
   }
   .shape8 {
@@ -2054,20 +2081,22 @@
       transform: translateX(-200px);
     }
   }
-`;customElements.define("cn-animation",class extends it{constructor(){super()}render(){return N`
+`;let Ot=Xt;window.addEventListener("scroll",(()=>{Ot=Xt})),customElements.define("cn-animation",class extends it{constructor(){super()}render(){return R`
          <style>${Ot}</style>
             <div class="animated-things">
-                <div class="shapes shape1" style="transform: rotate(45deg);" data-rellax-speed="10" ></div>
-                <div class="shapes shape2" data-rellax-speed="10" ></div>
-                <div class="shapes shape3" data-rellax-speed="5" ></div>
-                <div class="shapes shape4" data-rellax-speed="7" ></div>
-                <div class="shapes shape5" data-rellax-speed="1" ></div>
-                <div class="shapes shape6" data-rellax-speed="-2" ></div>
-                <div class="shapes shape7" data-rellax-speed="8" ></div>
-                <div class="shapes shape8" data-rellax-speed="6" ></div>
+                <div class="shapes shape1" ></div>
+                <div class="shapes shape2" ></div>
+                <div class="shapes shape3" ></div>
+                <div class="shapes shape4" ></div>
+                <div class="shapes shape5" ></div>
+                <div class="shapes shape51" ></div>
+                <div class="shapes shape52" ></div>
+                <div class="shapes shape6" ></div>
+                <div class="shapes shape7" ></div>
+                <div class="shapes shape8" ></div>
             </div>
         
-        `}}),customElements.define("cn-imagebox",class extends it{constructor(){super()}#e=null;set ic(t){this.#e=t}render(){const t=this.#e;if(null===t)return;const e=t.img,i=t.workType,s=t.description;return N`
+        `}}),customElements.define("cn-imagebox",class extends it{constructor(){super()}#e=null;set ic(t){this.#e=t}render(){const t=this.#e;if(null===t)return;const e=t.img,i=t.workType,s=t.description;return R`
       <style>
         .first-project {
           position: relative;
@@ -2086,7 +2115,7 @@
           left: 0;
           width: 100%;
           height: fit-content;
-          background-color: ${r(ft)};
+          background-color: ${o(vt)};
           transition: 0.5s ease;
           padding: 1rem 1rem 0 1rem;
           display: flex;
@@ -2097,14 +2126,14 @@
         }
 
         h3 {
-          color: ${r(pt)};
+          color: ${o(gt)};
           font-size: 1.5rem;
           font-weight: 500;
           margin: 0;
         }
 
         p {
-          color: ${r(bt)};
+          color: ${o(xt)};
           font-size: 1rem;
           font-weight: 300;
         }
@@ -2129,7 +2158,7 @@
           <p>- ${s}</p>
         </div>
       </div>
-    `}});const Xt=a`
+    `}});const Yt=a`
 .project-intro {
     display: flex;
     flex-direction: column;
@@ -2143,7 +2172,7 @@
 .each-project-img-intro{
     height: 100%;
     padding: 1rem;
-    background: ${r(vt)};
+    background: ${o(bt)};
     /* backdrop-filter: blur(5px); */
     /* backdrop-filter: blur(5px); */
     border-radius: 10px;
@@ -2215,7 +2244,7 @@
     z-index: -1;
     width: 40px;
     height: 40px;
-    background: ${r(ut)};
+    background: ${o(ft)};
     transition: all 3s cubic-bezier(0.68, -0.85, 0.265, 2);
 }
 
@@ -2236,7 +2265,7 @@
     .each-project-detailes{
         width: 80%;
         margin-bottom: 3rem;
-        border-bottom: 1px solid ${r(dt)};
+        border-bottom: 1px solid ${o(dt)};
         
     }
     .each-project-img-intro{
@@ -2251,7 +2280,7 @@
 
     .each-project-title {
         font-size: 6rem;
-        color: ${r(pt)};
+        color: ${o(gt)};
     }
     .each-project-desc {
         width: 100%;   
@@ -2264,7 +2293,7 @@
     }
 
     .overlay-each-project{
-        background-color: ${r(ut)};
+        background-color: ${o(ft)};
         padding: 0;
     }
 
@@ -2278,15 +2307,15 @@
     }
 }
 
-`;let Bt=Xt;window.addEventListener("resize",(()=>{Bt=Xt})),customElements.define("cn-gallery",class extends it{constructor(){super()}static get styles(){return a`
+`;let Ft=Yt;window.addEventListener("resize",(()=>{Ft=Yt})),customElements.define("cn-gallery",class extends it{constructor(){super()}static get styles(){return a`
     .return-button {
       position: fixed;
       left: 5%;
       bottom: 10%;
       width: 100%;
     }
-    ${Bt}
-    `}#e=null;set ic(t){this.#e=t}render(){const t=this.#e;if(null===t)return;const e=t.collectionName,i=t.title,s=t.description,n=t.getImages();return N`
+    ${Ft}
+    `}#e=null;set ic(t){this.#e=t}render(){const t=this.#e;if(null===t)return;const e=t.collectionName,i=t.title,s=t.description,n=t.getImages();return R`
         <div class="project-intro">
             <div class="each-project-detailes">
                 <p class="each-project-line"><span>&#x02014&#x02014&#x02014&#x02014</span> ${e}</p>
@@ -2295,7 +2324,7 @@
             </div>
             <div class="each-project-img-intro">
                 <div class="forms">
-                    ${n.map(((t,i)=>N`
+                    ${n.map(((t,i)=>R`
                         <div
                           @click=${()=>{"E-sport"!==e&&this.#n(i,t.workType)}}
                           class="each-form"
@@ -2318,7 +2347,7 @@
         direction="left"
       ></cn-specialbutton>
     </div>
-        `}#n(t,e){const i=this.shadowRoot.getElementById(t),s=this.shadowRoot.querySelector(".each-project-img-intro");this.shadowRoot.querySelectorAll(".each-form"),i.classList.contains("change-view-imgbox")?(s.classList.add("x"),i.classList.remove("change-view-imgbox"),i.classList.add("change-view-imgbox-active")):(s.classList.remove("x"),i.classList.remove("change-view-imgbox-active"),i.classList.add("change-view-imgbox")),setTimeout((()=>{this.#e.pageConfig("work",e)}),1e3)}});const Dt=a`
+        `}#n(t,e){const i=this.shadowRoot.getElementById(t),s=this.shadowRoot.querySelector(".each-project-img-intro");this.shadowRoot.querySelectorAll(".each-form"),i.classList.contains("change-view-imgbox")?(s.classList.add("x"),i.classList.remove("change-view-imgbox"),i.classList.add("change-view-imgbox-active")):(s.classList.remove("x"),i.classList.remove("change-view-imgbox-active"),i.classList.add("change-view-imgbox")),setTimeout((()=>{this.#e.pageConfig("work",e)}),1e3)}});const Jt=a`
 
 .work-container {
     display: flex;
@@ -2357,30 +2386,37 @@
     padding: 20% 0 0 20%;
 }
 .section-one .intro-title .btn-title {
-    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     position: absolute;
-    bottom: -10%;
-    left: 0;
+    bottom: 5vh;
+    left: 5vh;
     z-index: 2;
-    
+
+}
+
+.github-project {
+    position: fixed;
+    top: 10vh;
+    right: -85vw;
+    z-index: 5;
+    width: 100%;
 }
 
 .section-one .intro-title h1 {
     font-family: 'Montserrat', sans-serif;
     font-size: 5rem;
     font-weight: 900;
-    color: ${r(ct)};
+    color: ${o(ct)};
 }
 
 .section-one .intro-title a {
     text-decoration: none; 
     font-size: 1.2rem;
-    padding: 0.6rem 4rem;
+    padding: 0.6rem 3rem;
     border-radius: 5px;
-    background: ${r(gt)};
+    background: ${o(mt)};
     color: #eee;
     border: none;
     cursor: pointer;
@@ -2449,10 +2485,17 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
-    z-index: 2;
+    width: 90%;
+    opacity: 0.5;
+    z-index: 5;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
 }
-.section-one .intro-images .navigator a {
+
+.section-one .intro-images .navigator:hover div {
+    opacity: 1;
+}
+.section-one .intro-images .navigator div {
     text-decoration: none;
     opacity: 0;
     display: flex;
@@ -2465,9 +2508,14 @@
     z-index: 2;
     cursor: pointer;
 }
-.section-one .intro-images:hover .navigator a {
+
+
+.section-one .intro-images:hover .navigator div {
+    background: red;
     opacity: 0.8;
     transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    z-index: 5; 
 }
 
 .section-one::before{
@@ -2477,7 +2525,7 @@
     left: 0;
     width: 50%;
     height: 100%;
-    background: linear-gradient(-60deg, rgba(244, 249, 255, 0) 30%, ${r(ft)} 0%);
+    background: linear-gradient(-60deg, rgba(244, 249, 255, 0) 30%, ${o(vt)} 0%);
     z-index: 1;
 }
 
@@ -2489,21 +2537,21 @@
 /* Section two */
 
 .section-two {
+    border-top: 1px solid ${o(at)};
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 5rem;
     width: 90%;
+    height: auto;
 }
 
 .section-two .paragraphs {
     position: relative;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     gap: 2rem;
-    border-top: 1px solid black;
-    padding: 0 2rem;
+    padding: 10rem 2rem;
 }
 
 
@@ -2521,9 +2569,8 @@
 }
 
 .title {
-    color: ${r(pt)};
-    color: ${r(ht)};
-
+    color: ${o(gt)};
+    margin: 0;
 }
 
 
@@ -2531,13 +2578,10 @@
 /*  Media  */
 
 @media (max-width: 980px) {
-
     .section-one {
         flex-direction: column;
     }
     
-
-
     .section-one .intro-title {
         position: absolute;
         top: 0;
@@ -2549,6 +2593,7 @@
 
     .section-one .intro-title h1 {
         font-size: 5rem;
+        color: ${o(gt)};
     }
 
     .return-button {
@@ -2579,9 +2624,24 @@
         transform: translate(-12%, 0%);
     }
 
-    .section-one .intro-title .btn-title {
-        bottom: 0;
+    .section-one .intro-title a {
+        font-size: 4rem;
+        padding: 1rem 2rem;
     }
+
+
+.github-project {
+    position: fixed;
+    top: 10vh;
+    right: -60vw;
+    z-index: 5;
+    width: 100%;
+}
+    
+    .section-one .intro-title .btn-title {
+        bottom: 5vh;
+    }
+
 
     .section-one .intro-images .navigator {
         width: 100%;
@@ -2594,6 +2654,7 @@
 
     .section-two {
         padding: 0;
+        height: auto;
     }
     
     .section-two .paragraphs {
@@ -2630,7 +2691,7 @@
 
 
 
-`;let Wt=Dt;window.addEventListener("resize",(()=>{Wt=Dt})),customElements.define("cn-hire",class extends it{static get styles(){return a`
+`;let qt=Jt;window.addEventListener("resize",(()=>{qt=Jt})),customElements.define("cn-hire",class extends it{static get styles(){return a`
       :host {
         display: block;
       }
@@ -2671,7 +2732,7 @@
 
       .s-one h1 {
         font-size: 2rem;
-        color: ${r(pt)};
+        color: ${o(gt)};
       }
 
       .s-one p {
@@ -2722,7 +2783,7 @@
           align-items: center;
         }
       }
-    `}#e=null;set ic(t){this.#e=t,this.requestUpdate()}render(){const t=this.#e;if(null!==t)return N`
+    `}#e=null;set ic(t){this.#e=t,this.requestUpdate()}render(){const t=this.#e;if(null!==t)return R`
       <div class="footer">
         <div class="content">
           <div class="s-one">
@@ -2734,11 +2795,11 @@
             <cn-socialmedia></cn-socialmedia>
           </div>
           <div class="s-two">
-            <cn-specialbutton @click=${()=>t.getPageNavigator("home","contact")} buttonName="Hire me"></cn-specialbutton>
+            <cn-specialbutton @click=${()=>t.getPageNavigator("home","contact")} buttonName="Anställa mig"></cn-specialbutton>
           </div>
         </div>
       </div>
-    `}}),customElements.define("cn-work",class extends it{static styles=Wt;constructor(){super()}updated(){if(null!==this.#e){const t=this.#e.titles;(t[0].title.startsWith("Grafisk ansvarig")||t[0].title.startsWith("Restaurant Finder"))&&this.#l()}}#e=null;set ic(t){this.#e=t}render(){const t=this.#e;if(null===t)return;const e=t.titles,i=[];i.push(e[1]),i.push(e[2]);const s=t.getBild(),n=t.link;return N`
+    `}}),customElements.define("cn-work",class extends it{static styles=qt;constructor(){super()}updated(){if(null!==this.#e){const t=this.#e.titles;(t[0].title.startsWith("Grafisk")||t[0].title.includes("prototyp"))&&this.#l()}}#e=null;set ic(t){this.#e=t}render(){const t=this.#e;if(null===t)return;const e=t.titles,i=[];i.push(e[1]),i.push(e[2]);const s=t.getBild(),n=t.link;return R`
       <style>
         .return-button {
           position: fixed;
@@ -2748,39 +2809,61 @@
         }
       </style>
       <div class="work-container">
-      ${e[0].title.startsWith("Grafisk ansvarig")||e[0].title.startsWith("Restaurant Finder")?N`
+      ${e[0].title.includes("Grafisk")||e[0].description.includes("prototyp")?R`
             <div class="section-one">
             <div class="intro-title">
               <div class="content-title">
                 <h1 class="title">${e[0].title}</h1>
               </div>
-              ${null!==n&&""!==n?N`<div class="btn-title">
+              ${null!==n&&""!==n?R`
+              <div class="btn-title">
                 <a
-                  href=${n}
+                  @click=${()=>s.getPageNavigator("work",n)}
                   target="_blank"
                   class="intro-button"
                 >
-                  Product</a
+                ${e[0].title.includes("Grafisk")?"Läs mer om katalogen":""}</a
                 >
               </div>`:""}
             </div>
+           
             <div class="intro-images">
-              ${s.imgs.map((t=>N`
+              ${s.imgs.map((t=>R`
                   <div class="imgs-container">
                     <img class="behind" src=${t.src} alt="" />
                     <img class="front" src=${t.src} alt="" />
                   </div>
                 `))}
               <div class="navigator">
-                <a class="prev" href="#">Prev</a>
-                <a class="next" href="#">Next</a>
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='0.2' stroke-opacity='1' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='11' stroke='black' stroke-width='0.2' stroke-opacity='0.8' fill='transparent'/%3E%3Cpath d='M19 12H5M12 5L5 12l7 7'/%3E%3C/svg%3E" class="prev" >
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='0.2' stroke-opacity='1' stroke-linecap='round' stroke-linejoin='round' transform='scale(-1, 1)' %3E%3Ccircle cx='12' cy='12' r='11' stroke='black' stroke-width='0.2' stroke-opacity='0.8' fill='transparent'/%3E%3Cpath d='M19 12H5M12 5L5 12l7 7' /%3E%3C/svg%3E" class="next">
               </div>
             </div>
+
           </div>
-      `:N`
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+          `:R`
           <div style="height: 90vh;">
             <cn-bild .ic=${s}></cn-bild>
           </div>
+          ${null!==n&&""!==n?R`<div class="github-project" style="margin-left: -10%;">
+          <cn-specialbutton
+              @click=${()=>window.open(n,"_blank")}
+              buttonName=${null!==e&&e[0].description.includes("tidsbokningssystem")?"Hemsidan":"Github project"}
+          ></cn-specialbutton>
+              
+          </div>`:""}
          `}
         
 
@@ -2788,7 +2871,7 @@
         <div class="section-two">
           <div class="paragraphs">
             <div class="top-line"></div>
-            ${i.map((t=>N`
+            ${e.map((t=>R`
                 <div class="paragraph">
                   <div>
                     <h1 class="title">${t.title}</h1>
@@ -2802,7 +2885,7 @@
         </div>
       </div>
 
-      ${e[0].title.startsWith("Grafisk ansvarig")||e[0].title.startsWith("Restaurant Finder")?N`
+      ${e[0].title.includes("Grafisk")||e[0].description.includes("prototyp")?R`
           <div class="return-button">
             <cn-specialbutton
               @click=${()=>s.getPageNavigator("gallery",s.from)}
@@ -2816,7 +2899,7 @@
 
       <!-- footer -->
       <cn-hire .ic=${t.getBild()}></cn-hire>
-    `}#l(){const t=this.shadowRoot.querySelector(".prev"),e=this.shadowRoot.querySelector(".next");var i=this.shadowRoot.querySelectorAll(".imgs-container");let s,n=1;const o=()=>{for(let t=0;t<i.length;t++)i[t].style.display="none";i[n-1].style.display="flex",s=setTimeout((()=>{n++,n>i.length&&(n=1),o()}),4e3)};t.addEventListener("click",(()=>{n--,n<1&&(n=i.length),clearTimeout(s),o()})),e.addEventListener("click",(()=>{n++,n>i.length&&(n=1),clearTimeout(s),o()})),o()}});const Yt=a`
+    `}#l(){const t=this.shadowRoot.querySelector(".prev"),e=this.shadowRoot.querySelector(".next");var i=this.shadowRoot.querySelectorAll(".imgs-container");let s,n=1;const r=()=>{for(let t=0;t<i.length;t++)i[t].style.display="none";i[n-1].style.display="flex",s=setTimeout((()=>{n++,n>i.length&&(n=1),r()}),4e3)};t.addEventListener("click",(()=>{n--,n<1&&(n=i.length),clearTimeout(s),r()})),e.addEventListener("click",(()=>{n++,n>i.length&&(n=1),clearTimeout(s),r()})),r()}});const Wt=a`
       
   .carousel {
     position: relative;
@@ -3003,9 +3086,9 @@
   }
   
 
-`;customElements.define("cn-slidshow",class extends it{static styles=Yt;constructor(){super()}updated(){this.#n()}#e=null;set ic(t){this.#e=t}render(){return N`
+`;customElements.define("cn-slidshow",class extends it{static styles=Wt;constructor(){super()}updated(){this.#n()}#e=null;set ic(t){this.#e=t}render(){return R`
       <div class="carousel">
-        ${this.#e.map((t=>N`
+        ${this.#e.map((t=>R`
             <div class="carousel-item">
               <div class="carousel-box">
                 <div class="title">${t.description}</div>
@@ -3017,7 +3100,7 @@
 
       <div class="cursor"></div>
       <div class="cursor cursor2"></div>
-    `}#n(){let t=6,e=0,i=0,s=!1;const n=this.shadowRoot.querySelectorAll(".carousel-item"),o=this.shadowRoot.querySelectorAll(".cursor"),r=()=>{t=Math.max(0,Math.min(t,100)),i=Math.floor(t/100*(n.length-1)),70===t?i=3:90===t&&(i=4),console.log(t,i,n.length),n.forEach(((t,e)=>((t,e,i)=>{const s=((t,e)=>t.map(((i,s)=>e===s?t.length:t.length-Math.abs(e-s))))([...n],i)[e];t.style.setProperty("--zIndex",s),t.style.setProperty("--active",(e-i)/n.length)})(t,e,i)))};r(),n.forEach(((e,i)=>{e.addEventListener("click",(()=>{t=i/n.length*100+10,r()}))}));const a=i=>{if("mousemove"===i.type&&o.forEach((t=>{t.style.transform=`translate(${i.clientX}px, ${i.clientY}px)`})),!s)return;const n=i.clientX||i.touches&&i.touches[0].clientX||0;t+=-.1*(n-e),e=n,r()},l=t=>{s=!0,e=t.clientX||t.touches&&t.touches[0].clientX||0},d=()=>{s=!1};this.shadowRoot.addEventListener("mousewheel",(e=>{const i=.02*e.deltaY;t+=i,r()})),this.shadowRoot.addEventListener("mousedown",l),this.shadowRoot.addEventListener("mousemove",a),this.shadowRoot.addEventListener("mouseup",d),this.shadowRoot.addEventListener("touchstart",l),this.shadowRoot.addEventListener("touchmove",a),this.shadowRoot.addEventListener("touchend",d)}});const Ft=a`
+    `}#n(){let t=6,e=0,i=0,s=!1;const n=this.shadowRoot.querySelectorAll(".carousel-item"),r=this.shadowRoot.querySelectorAll(".cursor"),o=()=>{t=Math.max(0,Math.min(t,100)),i=Math.floor(t/100*(n.length-1)),70===t?i=3:90===t&&(i=4),console.log(t,i,n.length),n.forEach(((t,e)=>((t,e,i)=>{const s=((t,e)=>t.map(((i,s)=>e===s?t.length:t.length-Math.abs(e-s))))([...n],i)[e];t.style.setProperty("--zIndex",s),t.style.setProperty("--active",(e-i)/n.length)})(t,e,i)))};o(),n.forEach(((e,i)=>{e.addEventListener("click",(()=>{t=i/n.length*100+10,o()}))}));const a=i=>{if("mousemove"===i.type&&r.forEach((t=>{t.style.transform=`translate(${i.clientX}px, ${i.clientY}px)`})),!s)return;const n=i.clientX||i.touches&&i.touches[0].clientX||0;t+=-.1*(n-e),e=n,o()},l=t=>{s=!0,e=t.clientX||t.touches&&t.touches[0].clientX||0},d=()=>{s=!1};this.shadowRoot.addEventListener("mousewheel",(e=>{const i=.02*e.deltaY;t+=i,o()})),this.shadowRoot.addEventListener("mousedown",l),this.shadowRoot.addEventListener("mousemove",a),this.shadowRoot.addEventListener("mouseup",d),this.shadowRoot.addEventListener("touchstart",l),this.shadowRoot.addEventListener("touchmove",a),this.shadowRoot.addEventListener("touchend",d)}});const Gt=a`
   body {
     background-color: #ffe53b;
     background-image: linear-gradient(147deg, #ffe53b 0%, #fd3838 74%);
@@ -3245,7 +3328,7 @@
       }
     }
   }
-`;customElements.define("cn-slid-text",class extends it{static styles=Ft;constructor(){super()}updated(){this.#n()}#d="";set ic(t){this.#d=t}render(){return N`
+`;customElements.define("cn-slid-text",class extends it{static styles=Gt;constructor(){super()}updated(){this.#n()}#d="";set ic(t){this.#d=t}render(){return R`
       <div class="blog-slider">
         <div class="blog-slider__wrp swiper-wrapper">
           <div class="blog-slider__item swiper-slide">
@@ -3303,7 +3386,7 @@
         </div>
         <div class="blog-slider__pagination"></div>
       </div>
-    `}#n(){new Swiper(".blog-slider",{spaceBetween:30,effect:"fade",loop:!0,mousewheel:{invert:!1},pagination:{el:".blog-slider__pagination",clickable:!0}})}});const qt=a`
+    `}#n(){new Swiper(".blog-slider",{spaceBetween:30,effect:"fade",loop:!0,mousewheel:{invert:!1},pagination:{el:".blog-slider__pagination",clickable:!0}})}});const Vt=a`
   
   .intro-bg {
       height: 80vh;
@@ -3315,7 +3398,8 @@
   }
   
   .bg{
-    background: rgb(68, 9, 73);
+    background: ${o(bt)};
+/*    background: linear-gradient( ${o(ht)} 0%, ${o(gt)} 100%); */
     width: 100%;
     height: 100%;
     position: absolute;
@@ -3371,28 +3455,27 @@
     justify-content: center;
     align-items: center;
 
+    color: ${o(gt)};
     z-index: 4;
   }
   
   
   .title h1 {
     font-size: 4rem;
-    color: white;
   
   }
   .title a{
-      font-size: 1rem;
+    font-size: 1rem;
     padding: 1rem 2rem;
     border: none;
     border-radius: 25px;
     background: rgb(192, 24, 130);
     text-decoration: none;
-    color: rgb(255, 255, 255);
   }
   
   .info-header p {
+    color: ${o(ht)};
     font-size: 1.2rem;
-    color: rgb(255, 255, 255);
   }
   
   
@@ -3434,6 +3517,7 @@
     width: 90%;
     margin-left: 5%;
     font-size: 6rem;
+    color: ${o(gt)};
   }
   
   
@@ -3464,7 +3548,10 @@
     justify-content: center;
     align-items: flex-start;
     gap: 4rem;
+  
+    color: ${o(gt)};
   }
+
 
   .mellan-leg a {
     text-decoration: underline;
@@ -3482,8 +3569,8 @@
   }
 
   .title p {
-    color: ${r(ut)};
-    font-weight: 200;
+    width: 60%;
+    text-align: center;
   }
   
   
@@ -3509,14 +3596,11 @@
     }
     
     .title p {
+      width: 100%;
       padding: 0 3rem;
       font-size: 2.5rem;
       text-align: center;
     }
-    
-      .info {
-        padding: 1rem 1rem 0 1rem;
-      }
   
     .info h1 {
       width: 100%;
@@ -3568,15 +3652,15 @@
 
   }
 
-`;let Jt=qt;window.addEventListener("resize",(()=>{Jt=qt})),customElements.define("cn-catalogue",class extends it{static get styles(){return a`
+`;let Zt=Vt;window.addEventListener("resize",(()=>{Zt=Vt})),customElements.define("cn-catalogue",class extends it{static get styles(){return a`
     .return-button {
       position: fixed;
       left: 5%;
       bottom: 10%;
       width: 100%;
     }
-      ${Jt}
-    `}constructor(){super()}#e=null;set ic(t){this.#e=t,this.requestUpdate()}render(){const t=this.#e;if(null===t)return;const e=t.from,i=t.imgs;return N`
+      ${Zt}
+    `}constructor(){super()}#e=null;set ic(t){this.#e=t,this.requestUpdate()}render(){const t=this.#e;if(null===t)return;const e=t.from,i=t.imgs;return R`
       <div class="intro-bg">
         <div class="info-header">
           <p>Utställningen Unga Forskare</p>
@@ -3601,7 +3685,7 @@
       </div>
 
       <div class="imgs">
-          ${i.map(((t,e)=>N`
+          ${i.map(((t,e)=>R`
                 ${5===e?this.#c():""}
                 <img src="${t.src}" alt="final katalog" />
             `))}
@@ -3619,7 +3703,7 @@
       ></cn-specialbutton>
     </div>
 
-    `}#c(){return N`
+    `}#c(){return R`
     <div class="mellan-leg">
     <div class="footer-info">
       <h1>Unga forskare</h1>
@@ -3631,7 +3715,7 @@
       <a href="https://ungaforskare.se/">Läs mer...</a>
     </div>
     <div class="om-mig">
-      <h1>Mer om mitt ansvarig</h1>
+      <h1>Mitt ansvarig</h1>
       <p>
         Final katalog 2023 var en viktigt del av utställningen unga
         forskare. Jag var ansvarig för att ta upp ett nytt koncept för
@@ -3642,30 +3726,30 @@
     </div>
   </div>
     
-    `}});class Gt extends it{static styles=a`
+    `}});class Kt extends it{static styles=a`
     section {
       width: 100vw;
       height: 60vh;
     }
-  `;constructor(){super()}#h="home";#p=null;render(){return N`
+  `;constructor(){super()}#p="home";#h=null;render(){return R`
       <section>${this.#g()}</section>
-    `}#g(){if("home"===this.#h){if(null!==this.#p)switch(this.#p){case"contact":return setTimeout((()=>{window.scrollTo(0,4800)}),800),this.#m();case"works":return window.scrollTo(0,1500),this.#m()}return window.scrollTo(0,0),this.#m()}if("gallery"===this.#h)switch(this.#p){case"Software":const t={pageConfig:this.#s.bind(this),collectionName:"Webb och Desktop Applikationer",title:"Webb & Desktop",description:"Jag har arbetat med olika webb- och desktopsapplikationer tidigare. Här är några exempel på dem.",getImages:()=>[{workType:"Online tidsbokningssystem",description:"Online tidsbokningssystem",img:"./sourcefile/web/obs/gallery.png"},{workType:"flygbokningssystem",description:"Book flight tickets and manage your bookings",img:"./sourcefile/web/jetstream/gallery.png"},{workType:"Orbitz",description:"Solarsystem Exploraton Desktop App",img:"./sourcefile/web/orbitz/gallery.png"},{workType:"Trafikverket + Spotify",description:"Trafikverket + Spotify Desktop App",img:"./sourcefile/web/skonetrafik_spotify/gallery.png"}]};return N`<cn-gallery .ic=${t}></cn-gallery>`;case"UI/UX":const e={pageConfig:this.#s.bind(this),collectionName:"UI/UX",title:"UI/UX",description:"Jag har arbetat med UI & UX protyping tidigare. Här är några exempel på dem.",getImages:()=>[{workType:"Food Delivery App",description:"Mobile App",img:"./sourcefile/uiux/gallery.png"}]};return N`<cn-gallery .ic=${e}></cn-gallery>`;case"E-sport":const i={from:"Home",getPageNavigator:this.#s.bind(this),imgs:[{src:"./sourcefile/gfx/e-sport/youtube/snl.png",title:"Sunlesskhan - YouTube",description:"Make rocket league videos - Over 2M subscribers"},{src:"./sourcefile/gfx/e-sport/youtube/Deezzyy.png",title:"Deezzyy - YouTube",description:"Play video games"},{src:"./sourcefile/gfx/e-sport/youtube/heart.png",title:"Heart Break Kelby - YouTube",description:"Make vlog videos"},{src:"./sourcefile/gfx/e-sport/youtube/pakdel.png",title:"Pakdel Studio - YouTube",description:"Make gfx tutorial videos"},{src:"./sourcefile/gfx/e-sport/twitter/codspx.png",title:"CodspX gaming - Team",description:"Compete in gaming tournaments"},{src:"./sourcefile/gfx/e-sport/twitter/fibeon.png",title:"Fibeon Esport - Team",description:"Compete in rocket leagues tournaments"},{src:"./sourcefile/gfx/e-sport/twitter/rlraderz.png",title:"Rlraderz - Player",description:"Rocket league player"},{src:"./sourcefile/gfx/e-sport/twitter/victario.png",title:"Victario GFX - Studio",description:"Make gfx for gaming"},{src:"./sourcefile/gfx/e-sport/twitch/revamp.png",title:"Revamp - Twitch",description:"Full twitch design - overlay, panels, emotes"},{src:"./sourcefile/gfx/e-sport/twitch/stream.png",title:"Stream - Twitch",description:"Stream window design"},{src:"./sourcefile/gfx/e-sport/twitch/PANEL.png",title:"Panel - Twitch",description:"Panel design"}]};return N`
+    `}#g(){if("home"===this.#p){if(null!==this.#h)switch(this.#h){case"contact":return setTimeout((()=>{window.scrollTo(0,4800)}),800),this.#m();case"works":return window.scrollTo(0,1500),this.#m()}return window.scrollTo(0,0),this.#m()}if("gallery"===this.#p)switch(this.#h){case"Software":const t={pageConfig:this.#i.bind(this),collectionName:"Webb och Desktop Applikationer",title:"Webb & Desktop",description:"Jag har arbetat med olika webb- och desktopsapplikationer tidigare. Här är några exempel på dem.",getImages:()=>[{workType:"Booker - en online tidsbokningssystem",description:"Online tidsbokningssystem",img:"./sourcefile/web/obs/gallery.png"},{workType:"JetStream - en flygbokningssystem",description:"Book flight tickets and manage your bookings",img:"./sourcefile/web/jetstream/gallery.png"},{workType:"Orbitz - en utbildningsapplikation",description:"Solarsystem Exploraton Desktop App",img:"./sourcefile/web/orbitz/gallery.png"},{workType:"Trafikverket + Spotify - en kombinerad applikation och RESTful API",description:"Trafikverket + Spotify Desktop App",img:"./sourcefile/web/skonetrafik_spotify/gallery.jpg"}]};return R`<cn-gallery .ic=${t}></cn-gallery>`;case"UI/UX":const e={pageConfig:this.#i.bind(this),collectionName:"UI/UX",title:"UI/UX",description:"Jag har arbetat med UI & UX protyping tidigare. Här är några exempel på dem.",getImages:()=>[{workType:"Food Delivery App",description:"Mobile App",img:"./sourcefile/uiux/gallery.png"}]};return R`<cn-gallery .ic=${e}></cn-gallery>`;case"E-sport":const i={from:"Home",getPageNavigator:this.#i.bind(this),imgs:[{src:"./sourcefile/gfx/e-sport/youtube/snl.png",title:"Sunlesskhan - YouTube",description:"Make rocket league videos - Over 2M subscribers"},{src:"./sourcefile/gfx/e-sport/youtube/Deezzyy.png",title:"Deezzyy - YouTube",description:"Play video games"},{src:"./sourcefile/gfx/e-sport/youtube/heart.png",title:"Heart Break Kelby - YouTube",description:"Make vlog videos"},{src:"./sourcefile/gfx/e-sport/youtube/pakdel.png",title:"Pakdel Studio - YouTube",description:"Make gfx tutorial videos"},{src:"./sourcefile/gfx/e-sport/twitter/codspx.png",title:"CodspX gaming - Team",description:"Compete in gaming tournaments"},{src:"./sourcefile/gfx/e-sport/twitter/fibeon.png",title:"Fibeon Esport - Team",description:"Compete in rocket leagues tournaments"},{src:"./sourcefile/gfx/e-sport/twitter/rlraderz.png",title:"Rlraderz - Player",description:"Rocket league player"},{src:"./sourcefile/gfx/e-sport/twitter/victario.png",title:"Victario GFX - Studio",description:"Make gfx for gaming"},{src:"./sourcefile/gfx/e-sport/twitch/revamp.png",title:"Revamp - Twitch",description:"Full twitch design - overlay, panels, emotes"},{src:"./sourcefile/gfx/e-sport/twitch/stream.png",title:"Stream - Twitch",description:"Stream window design"},{src:"./sourcefile/gfx/e-sport/twitch/PANEL.png",title:"Panel - Twitch",description:"Panel design"}]};return R`
           <div style="height: 100vh;">
           <cn-bild .ic=${i}></cn-bild>
           </div>
-          `;case"Graphic":const s={pageConfig:this.#s.bind(this),collectionName:"Graphic",title:"Graphic",description:"Jag har arbetat med grafisk design tidigare. Här är några exempel på dem.",getImages:()=>[{workType:"Catalogue Design",description:"Catalogue and magazine design",img:"./sourcefile/gfx/uuf/mockups/gallery.jpg"},{workType:"Logo Design",description:"Some of my logo designs",img:"./sourcefile/gfx/logo/gallery.jpg"},{workType:"UUF",description:"Utställningen Unga Forskare",img:"./sourcefile/gfx/uuf/gallery.jpg"}]};return N`<cn-gallery .ic=${s}></cn-gallery>`;case"Home":return this.#m()}if("work"===this.#h)switch(console.log(this.#p),this.#p){case"Online tidsbokningssystem":return N`<cn-work .ic=${{getBild:()=>({from:"Software",getPageNavigator:this.#s.bind(this),imgs:[{src:"./sourcefile/web/obs/table2.PNG",title:null,description:null},{src:"./sourcefile/web/obs/table.PNG",title:null,description:null},{src:"./sourcefile/web/obs/user-dash.PNG",title:null,description:null},{src:"./sourcefile/web/obs/admin-dash.PNG",title:null,description:null},{src:"./sourcefile/web/obs/edit-admin.PNG",title:null,description:null}]}),titles:[{title:"Online tidsbokningssystem",description:"Ett fulländat flygbokningssystem för privatpersoner på desktop och webben"},{title:"En fullständig bokningssystem till tvättstuga, frisör, massage, etc.",description:"Målet med denna applikation var att skapa en enkel och användarvänlig bokningssystem för vardagliga verksamheter. \n Genom JetStreams flygapplikation kan användare både intuitivt och tillfredsställande navigera sig genom flygvärldens alla resmöjligheter. Här sker smidig bokning genom designade gränssnitt och en interaktiv världskarta som tillåter användaren att boka och se sina önskade flygrutter."},{title:"Technologier",description:"Jag valde att använda mig av JavaScript, MongoDb, EJS layout och node js för att skapa denna applikation. Jag valde javascript för att det är ett språk jag är bekväm med och jag har använt det i flera projekt tidigare. Jag valde MongoDb för att det är ett NoSQL-databas som är lätt att använda och lätt att lära sig. Jag valde EJS layout för att det är ett enkelt sätt att skapa en layout som kan återanvändas i flera sidor. Jag valde node js för att det är ett enkelt sätt att skapa en server och det är lätt att lära sig."}],link:"https://bookningsystem.cyclic.app/"}}></cn-work>`;case"Food Delivery App":return N`<cn-work .ic=${{getBild:()=>({from:"UI/UX",getPageNavigator:this.#s.bind(this),imgs:[{src:"./sourcefile/uiux/mockups/front.png",title:null,description:null},{src:"./sourcefile/uiux/mockups/map.png",title:null,description:null},{src:"./sourcefile/uiux/mockups/map-setting.png",title:null,description:null},{src:"./sourcefile/uiux/mockups/map-detail.png",title:null,description:null},{src:"./sourcefile/uiux/mockups/meny.png",title:null,description:null},{src:"./sourcefile/uiux/mockups/final-step.png",title:null,description:null},{src:"./sourcefile/uiux/mockups/payment.png",title:null,description:null},{src:"./sourcefile/uiux/mockups/profile.png",title:null,description:null}]}),titles:[{title:"Restaurant Finder & Delivery app prototype.",description:"Ett prototype för en restaurang sök och leverans app."},{title:"Om prototypen",description:"Med detta prototyp har jag försökt skapa en enkel och användarvänlig app för att hitta restauranger och beställa mat. Designen spelade stor roll eftersom det är en app som används för att beställa mat. Jag valde att använda mig av en enkel och minimalistisk design för att göra det enkelt för användaren att navigera sig genom appen. Jag valde att använda mig av vit bakgrund och färgat detaljer för att göra det lättare för användaren att läsa och navigera sig."},{title:"Technologier & färgschema",description:"Jag valde att använda mig av Adobe XD för att skapa denna prototyp. Färgerna jag valde var vit, svart, grå, grön, lila och blå. Jag valde dessa färger för att de är enkla färger och gör designen lysande och unikt."}],link:null}}></cn-work>`;case"Orbitz":return N`<cn-work .ic=${{getBild:()=>({from:"Software",getPageNavigator:this.#s.bind(this),imgs:[{src:"./sourcefile/web/orbitz/orbitz.png",title:null,description:null},{src:"./sourcefile/web/orbitz/quiz.png",title:null,description:null},{src:"./sourcefile/web/orbitz/quiz_win.png",title:null,description:null},{src:"./sourcefile/web/orbitz/pop_up.png",title:null,description:null}]}),titles:[{title:"An educational app for students.",description:"The goal of this app is to educate students about the solar system and the planets in it. The app is designed to be fun and interactive for students to learn about the solar system."},{title:"About the project",description:"This project is build by collaborating of 3 team and 7 people. We did incrimental development and used agile methodology to develop this app. We divided in 3 team product owner, developer and tester and we used scrum to manage the project. We used Trello to manage the project and we had daily stand up meeting to discuss the progress of the project. We used github to manage the code and we had weekly code review to make sure the code is clean and readable. We used Figma to design the app and we had weekly design review to make sure the design is consistent and user friendly. We also changed the role between teh product owner, developer and tester after each sprint to make sure everyone has the same understanding of the project."},{title:"Technologies",description:"Java, javaFx and java swing is used to create this app. We integrate a fake API to get the data about the planets."}],link:null}}></cn-work>`;case"flygbokningssystem":return N`<cn-work .ic=${{getBild:()=>({from:"Software",getPageNavigator:this.#s.bind(this),imgs:[{src:"./sourcefile/web/jetstream/userdashboard.png",title:null,description:null},{src:"./sourcefile/web/jetstream/purchase.png",title:null,description:null},{src:"./sourcefile/web/jetstream/payment.png",title:null,description:null},{src:"./sourcefile/web/jetstream/my-ticket.png",title:null,description:null},{src:"./sourcefile/web/jetstream/history.png",title:null,description:null},{src:"./sourcefile/web/jetstream/games.png",title:null,description:null},{src:"./sourcefile/web/jetstream/admin-dash.png",title:null,description:null},{src:"./sourcefile/web/jetstream/map-search.png",title:null,description:null}]}),titles:[{title:"All in one - flygbokningssystem",description:"A fully featured flygbokningssystem for private persons on desktop and web"},{title:"About the project",description:"This project was build by a grupp of 4 students (Kasper, Khabib, Sossio and Obed) \n \nThe goal of this application was to create a simple and user-friendly booking system for everyone. \n Through JetStreams flight application, users can both intuitively and satisfactorily navigate through the world of all flight possibilities. Here, smooth booking is done through designed interfaces and an interactive world map that allows the user to book and see their desired flight routes. Forther more the application provides intertaining features such as games and a chat system."},{title:"Technologies",description:"We chose to use Java for the backend and JavaScript for the frontend. We chose Java for the backend because it is a language that is easy to maintaine the system and isolate the front-end from the back-end. We chose JavaScript for the frontend because it is a language that is used alot in front-end and for web development. Other technologies such as postgresSql for the database is used to store the data."}],link:null}}></cn-work>`;case"Trafikverket + Spotify":return N`<cn-work .ic=${{getBild:()=>({from:"Software",getPageNavigator:this.#s.bind(this),imgs:[{src:"./sourcefile/web/skonetrafik_spotify/Home.png",title:null,description:null},{src:"./sourcefile/web/skonetrafik_spotify/showCase.png",title:null,description:null},{src:"./sourcefile/web/skonetrafik_spotify/playlist.png",title:null,description:null},{src:"./sourcefile/web/skonetrafik_spotify/playlist2.png",title:null,description:null}]}),titles:[{title:"Trafikverket + Spotify",description:"A project to create a playlist based on the travel time in Sweden"},{title:"About the project",description:"This project was build by a grupp of 5 students under the course Web services. We created a brand new API that is based on the Trafikverket API and Spotify API in one. The goal of this project was to create a new API that is based on the Trafikverket API and Spotify API in one. The API is used to create a playlist based on the travel time in Sweden. The API is used by a web application that is created by the same group."},{title:"Technologies",description:"We chose to use Java and javaline to develop the API and we used JavaScript ES6 to develop the web application (front-end). We chose Java and javaline to develop the API because it is a language that is easy to maintaine the system and isolate the front-end from the back-end."}],link:null}}></cn-work>`;case"UUF":return N`
+          `;case"Graphic":const s={pageConfig:this.#i.bind(this),collectionName:"Graphic",title:"Graphic",description:"Jag har arbetat med grafisk design tidigare. Här är några exempel på dem.",getImages:()=>[{workType:"Catalogue Design",description:"Catalogue and magazine design",img:"./sourcefile/gfx/uuf/mockups/gallery.jpg"},{workType:"Logo Design",description:"Some of my logo designs",img:"./sourcefile/gfx/logo/gallery.jpg"},{workType:"UUF",description:"Utställningen Unga Forskare",img:"./sourcefile/gfx/uuf/gallery.jpg"}]};return R`<cn-gallery .ic=${s}></cn-gallery>`;case"Home":return this.#m()}if("work"===this.#p)switch(setTimeout((()=>{window.scrollTo({top:0,behavior:"smooth"})}),200),this.#h){case"Booker - en online tidsbokningssystem":return R`<cn-work .ic=${{getBild:()=>({from:"Software",getPageNavigator:this.#i.bind(this),imgs:[{src:"./sourcefile/web/obs/table2.PNG",title:null,description:null},{src:"./sourcefile/web/obs/table.PNG",title:null,description:null},{src:"./sourcefile/web/obs/user-dash.PNG",title:null,description:null},{src:"./sourcefile/web/obs/admin-dash.PNG",title:null,description:null},{src:"./sourcefile/web/obs/edit-admin.PNG",title:null,description:null}]}),titles:[{title:"Om projektet",description:"Målet med denna applikation var att skapa en enkel och användarvänlig tidsbokningssystem för vardagliga verksamheter."},{title:"Om mitt arbete",description:"Jag har självständigt utvecklat denna applikation som mitt hobbyprojekt under en period på 3 månader. Jag har arbetat med både front-end och back-end utveckling, samt skapat en databas för applikationen. Genom att kombinera mina kunskaper inom både front-end och back-end har jag skapat en komplett och funktionsrik applikation. Det har varit en spännande och utmanande upplevelse att arbeta självständigt med alla aspekter av utvecklingen, och jag är stolt över det resultat som jag har uppnått."},{title:"Technologier",description:"För front-end valde jag att använda mig av HTML, CSS, EJS, AJAX, JavaScript och jQuery. För back-end valde jag att använda mig av Node.js, Express.js, MongoDB, Cryptr, Authentication, Authorization, Sessions, Cookies och mera."}],link:"https://bookningsystem.cyclic.app/"}}></cn-work>`;case"Food Delivery App":return R`<cn-work .ic=${{getBild:()=>({from:"UI/UX",getPageNavigator:this.#i.bind(this),imgs:[{src:"./sourcefile/uiux/mockups/front.png",title:null,description:null},{src:"./sourcefile/uiux/mockups/map.png",title:null,description:null},{src:"./sourcefile/uiux/mockups/map-setting.png",title:null,description:null},{src:"./sourcefile/uiux/mockups/map-detail.png",title:null,description:null},{src:"./sourcefile/uiux/mockups/meny.png",title:null,description:null},{src:"./sourcefile/uiux/mockups/final-step.png",title:null,description:null},{src:"./sourcefile/uiux/mockups/payment.png",title:null,description:null},{src:"./sourcefile/uiux/mockups/profile.png",title:null,description:null}]}),titles:[{title:"En prototyp för matleverans app",description:"En prototyp för en privatpersoner för att söka olika restauranger och beställa mat."},{title:"Om mitt arbete",description:"Med denna prototyp har jag försökt skapa en enkel och användarvänlig app för att hitta restauranger och beställa mat. Designen spelade stor roll eftersom det är en app som används för att beställa mat. Jag valde att använda mig av en enkel och minimalistisk design för att göra det enkelt för användaren att navigera sig genom appen. Jag valde att använda mig av vit bakgrund och färgat detaljer för att göra det lättare för användaren att läsa och navigera sig."},{title:"Technologier & färgschema",description:"Jag valde att använda mig av Adobe XD för att skapa denna prototyp. Färgerna jag valde var vit, svart, grå, grön, lila och blå. Jag valde dessa färger för att de är enkla färger och gör designen lysande och unikt."}],link:null}}></cn-work>`;case"Orbitz - en utbildningsapplikation":return R`<cn-work .ic=${{getBild:()=>({from:"Software",getPageNavigator:this.#i.bind(this),imgs:[{src:"./sourcefile/web/orbitz/orbitz.png",title:null,description:null},{src:"./sourcefile/web/orbitz/quiz.png",title:null,description:null},{src:"./sourcefile/web/orbitz/quiz_win.png",title:null,description:null},{src:"./sourcefile/web/orbitz/pop_up.png",title:null,description:null}]}),titles:[{title:"Om projektet",description:"Detta projekt är byggt genom samarbete mellan 3 team och 7 personer. Vi använde en inkrementell utvecklingsmetodik och agil metod för att utveckla denna applikation. Vi delades upp i 3 team - produktägare, utvecklare och testare - och använde Scrum för att hantera projektet. Vi använde Trello för att hantera projektets framsteg och hade dagliga ståuppmöten för att diskutera projektets framsteg. Vi använde Github för att hantera koden och hade veckovisa kodgranskningar för att säkerställa att koden var ren och läsbar. Vi använde Figma för att designa appen och hade veckovisa designgranskningar för att säkerställa att designen var konsekvent och användarvänlig. Vi bytte också roller mellan produktägare, utvecklare och testare efter varje sprint för att säkerställa att alla hade samma förståelse för projektet."},{title:"Min roll",description:"Som en del av teamet har jag bidragit till alla roller och medverkat i utvecklingen av appen. Jag deltog i design och implementation av applikationens olika funktioner, inklusive zoomfunktioner för att förstå solsystemets skala, åtkomst till information om varje planet och deras månar, samt skapande av visuellt tilltalande grafik som förbättrade användarupplevelsen. Jag bidrog till att förbättra användarupplevelsen genom att implementera en interaktiv quizfunktion som hjälpte användarna att testa sina kunskaper och bli experter på solsystemet."},{title:"Technologies",description:"Java, JavaFX och Java Swing används för att skapa denna app. Vi integrerar även API för att hämta data om planeterna."}],link:"https://github.com/khabbib/orbitz"}}></cn-work>`;case"JetStream - en flygbokningssystem":return R`<cn-work .ic=${{getBild:()=>({from:"Software",getPageNavigator:this.#i.bind(this),imgs:[{src:"./sourcefile/web/jetstream/userdashboard.png",title:null,description:null},{src:"./sourcefile/web/jetstream/purchase.png",title:null,description:null},{src:"./sourcefile/web/jetstream/payment.png",title:null,description:null},{src:"./sourcefile/web/jetstream/my-ticket.png",title:null,description:null},{src:"./sourcefile/web/jetstream/history.png",title:null,description:null},{src:"./sourcefile/web/jetstream/games.png",title:null,description:null},{src:"./sourcefile/web/jetstream/admin-dash.png",title:null,description:null},{src:"./sourcefile/web/jetstream/map-search.png",title:null,description:null}]}),titles:[{title:"Om projektet",description:"Ett komplett flygbokningssystem för privatpersoner för desktop och webb. Detta projekt byggdes av en grupp på 4 studenter (Kasper, Obed, Sossio och jag)."},{title:"Min roll",description:"Som en del av projektgruppen var mitt bidrag till detta projekt att vara med och utveckla gränssnittet för användarinteraktion, inklusive design och implementering av användarvänliga gränssnitt för att underlätta bokningsprocessen. Jag bidrog även till att integrera underhållande funktioner såsom spel och chattsystem för att förbättra användarupplevelsen. Dessutom deltog jag i tester och felsökning för att säkerställa att applikationen fungerade smidigt och uppfyllde målet om att vara enkelt och användarvänligt för alla."},{title:"Technologies",description:"Java, JavaFX, Java Swing, MySQL, HTML, CSS, JavaScript, APIer, Maven, Node.js, Figma, MongoDB and EJS-layouts."}],link:"https://github.com/jetstream-org/JetStreamAPP"}}></cn-work>`;case"Trafikverket + Spotify - en kombinerad applikation och RESTful API":return R`<cn-work .ic=${{getBild:()=>({from:"Software",getPageNavigator:this.#i.bind(this),imgs:[{src:"./sourcefile/web/skonetrafik_spotify/Home.png",title:null,description:null},{src:"./sourcefile/web/skonetrafik_spotify/showCase.png",title:null,description:null},{src:"./sourcefile/web/skonetrafik_spotify/playlist.png",title:null,description:null},{src:"./sourcefile/web/skonetrafik_spotify/playlist2.png",title:null,description:null}]}),titles:[{title:"Om projektet",description:"Detta projekt byggdes av en grupp på 5 studenter inom kursen Webbaserade tjänster. Vi skapade en helt ny API baserad på Trafikverket API och Spotify API i ett och samma gränssnitt. Målet med projektet var att skapa en ny API som används för att skapa spellistor baserade på restider i Sverige."},{title:"Min roll",description:"Jag deltog i design och implementering av API-gränssnittet baserat på Trafikverket API och Spotify API. Jag var även involverad i att testa och felsöka API:et för att säkerställa dess funktionalitet. Dessutom bidrog jag till samarbetet inom gruppen och bidrog med mina idéer och expertis för att uppnå målet med att skapa en användbar och effektiv API-lösning för att skapa spellistor baserade på restider i Sverige."},{title:"Teknologier",description:"För back-end valde vi att använda Java, Javalin, och Maven. För front-end valde vi att använda HTML, CSS, JavaScript, jQuery, AJAX, och web components"}],link:"https://github.com/ecspresso/langpendlaren"}}></cn-work>`;case"UUF":return R`
          
-          <cn-work .ic=${{getBild:()=>({from:"Graphic",getPageNavigator:this.#s.bind(this),imgs:[{src:"./sourcefile/gfx/uuf/imgs/katalog.png",title:null,description:null},{src:"./sourcefile/gfx/uuf/imgs/anons_finalen.png",title:null,description:null},{src:"./sourcefile/gfx/uuf/imgs/affisch-gym.png",title:null,description:null},{src:"./sourcefile/gfx/uuf/imgs/affisch-gym-2.png",title:null,description:null},{src:"./sourcefile/gfx/uuf/imgs/affisch-vatten.png",title:null,description:null},{src:"./sourcefile/gfx/uuf/imgs/pin.png",title:null,description:null},{src:"./sourcefile/gfx/uuf/imgs/tid-kvar.png",title:null,description:null}]}),titles:[{title:"Grafisk ansvarig på Utställningen Unga Forskare",description:"Description"},{title:"Om mitt arbete",description:"Som grafisk ansvarig jobbade jag på Utställning Unga Forskare. Mitt ansvar är att säkerställa att alla grafiska material var färdiga, från design till tryck, för den årliga utställningen. Jag skapar katalog, broscher, flayer, annonser för att rekrytera deltagare och besökare till utställningen. Jag är stolt över min förmåga att levererade allt grafisk material på tid, samtidigt som jag säkerställde en hög standard för kvalitet och kreativitet."},{title:"Technologier",description:"Jag valde att använda mig av Adobe tryck programvaror och Affinity programvaror såsom Adobe InDesign, Affinity Publisher och andra programvaror för att redigera och göra illustrationer på mitt arbete."}],link:"https://ungaforskare.se/wp-content/uploads/2023/04/katalog-uug-2023.pdf"}}></cn-work>
+          <cn-work .ic=${{getBild:()=>({from:"Graphic",getPageNavigator:this.#i.bind(this),imgs:[{src:"./sourcefile/gfx/uuf/imgs/katalog.png",title:null,description:null},{src:"./sourcefile/gfx/uuf/imgs/anons_finalen.png",title:null,description:null},{src:"./sourcefile/gfx/uuf/imgs/semifinal.png",title:null,description:null},{src:"./sourcefile/gfx/uuf/imgs/affisch-gym-2.png",title:null,description:null},{src:"./sourcefile/gfx/uuf/imgs/affisch-vatten.png",title:null,description:null},{src:"./sourcefile/gfx/uuf/imgs/pin.png",title:null,description:null},{src:"./sourcefile/gfx/uuf/imgs/tid-kvar.png",title:null,description:null}]}),titles:[{title:"Grafisk ansvarig på Utställningen Unga Forskare",description:""},{title:"Om mitt arbete",description:"Som grafisk ansvarig jobbade jag på Utställning Unga Forskare. Mitt ansvar är att säkerställa att alla grafiska material var färdiga, från design till tryck, för den årliga utställningen. Jag skapar katalog, broscher, flayer, annonser för att rekrytera deltagare och besökare till utställningen. Jag är stolt över min förmåga att levererade allt grafisk material på tid, samtidigt som jag säkerställde en hög standard för kvalitet och kreativitet."},{title:"Technologier",description:"Jag valde att använda mig av Adobe tryck programvaror och Affinity programvaror såsom Adobe InDesign, Affinity Publisher och andra programvaror för att redigera och göra illustrationer på mitt arbete."}],link:"Catalogue Design"}}></cn-work>
           
-          `;case"Logo Design":const t={from:"Graphic",getPageNavigator:this.#s.bind(this),imgs:[{src:"./sourcefile/gfx/logo/LIGHTSOUT2.png",title:"Lights out - logo",description:"Computer and electronic company"},{src:"./sourcefile/gfx/logo/DEEZZYY.png",title:"Deezzyy - logo",description:"Streamer and content creator"},{src:"./sourcefile/gfx/logo/DIGNITY.png",title:"Dignity - logo",description:"Turnament and event team for eSport"},{src:"./sourcefile/gfx/logo/LIKAMEDIA.png",title:"Lika media - logo",description:"Media company"},{src:"./sourcefile/gfx/logo/ZAFARFAZE.png",title:"Zafar Faze - logo",description:"Clothing brand"},{src:"./sourcefile/gfx/logo/MAHEDOOZ.png",title:"Mahe Dooz - logo",description:"Clothing brand"}]};return N`
+          `;case"Logo Design":const t={from:"Graphic",getPageNavigator:this.#i.bind(this),imgs:[{src:"./sourcefile/gfx/logo/LIGHTSOUT2.png",title:"Lights out - logo",description:"Computer and electronic company"},{src:"./sourcefile/gfx/logo/DEEZZYY.png",title:"Deezzyy - logo",description:"Streamer and content creator"},{src:"./sourcefile/gfx/logo/DIGNITY.png",title:"Dignity - logo",description:"Turnament and event team for eSport"},{src:"./sourcefile/gfx/logo/LIKAMEDIA.png",title:"Lika media - logo",description:"Media company"},{src:"./sourcefile/gfx/logo/ZAFARFAZE.png",title:"Zafar Faze - logo",description:"Clothing brand"},{src:"./sourcefile/gfx/logo/MAHEDOOZ.png",title:"Mahe Dooz - logo",description:"Clothing brand"}]};return R`
           <div style="height: 100vh;">
           <cn-bild .ic=${t}></cn-bild>
           </div>
-          `;case"Catalogue Design":const e={from:"Graphic",getPageNavigator:this.#s.bind(this),imgs:[{src:"./sourcefile/gfx/uuf/mockups/combination-cover.jpg",title:null,description:null},{src:"./sourcefile/gfx/uuf/mockups/project-list.jpg",title:null,description:null},{src:"./sourcefile/gfx/uuf/mockups/project-list-overview.jpg",title:null,description:null},{src:"./sourcefile/gfx/uuf/mockups/roxane-overview.jpg",title:null,description:null},{src:"./sourcefile/gfx/uuf/mockups/roxane.jpg",title:null,description:null},{src:"./sourcefile/gfx/uuf/mockups/jurylistan-overview.jpg",title:null,description:null},{src:"./sourcefile/gfx/uuf/mockups/jurylistan.jpg",title:null,description:null},{src:"./sourcefile/gfx/uuf/mockups/ericsson-overview.jpg",title:null,description:null},{src:"./sourcefile/gfx/uuf/mockups/ericsson.jpg",title:null,description:null}]};return N`
+          `;case"Catalogue Design":const e={from:"Graphic",getPageNavigator:this.#i.bind(this),imgs:[{src:"./sourcefile/gfx/uuf/mockups/combination-cover.jpg",title:null,description:null},{src:"./sourcefile/gfx/uuf/mockups/project-list.jpg",title:null,description:null},{src:"./sourcefile/gfx/uuf/mockups/project-list-overview.jpg",title:null,description:null},{src:"./sourcefile/gfx/uuf/mockups/roxane-overview.jpg",title:null,description:null},{src:"./sourcefile/gfx/uuf/mockups/roxane.jpg",title:null,description:null},{src:"./sourcefile/gfx/uuf/mockups/jurylistan-overview.jpg",title:null,description:null},{src:"./sourcefile/gfx/uuf/mockups/jurylistan.jpg",title:null,description:null},{src:"./sourcefile/gfx/uuf/mockups/ericsson-overview.jpg",title:null,description:null},{src:"./sourcefile/gfx/uuf/mockups/ericsson.jpg",title:null,description:null}]};return R`
           <cn-catalogue .ic=${e}></cn-catalogue>
-          `}}#s=(t,e)=>{this.#h=t,this.#p=e,this.requestUpdate()};#m(){return N`
-    <cn-header .ic=${this.#s.bind(this)}></cn-header>
+          `}}#i=(t,e)=>{this.#p=t,this.#h=e,this.requestUpdate()};#m(){return R`
+    <cn-header .ic=${this.#i.bind(this)}></cn-header>
     <cn-animation></cn-animation>
     <cn-overview
-      .ic=${this.#s.bind(this)}
-    ></cn-overview>`}}customElements.define("cn-app",Gt)})()})();
+      .ic=${this.#i.bind(this)}
+    ></cn-overview>`}}customElements.define("cn-app",Kt)})()})();

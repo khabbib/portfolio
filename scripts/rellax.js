@@ -22,7 +22,7 @@ function parallexAnimation() {
   const shapes = animation.shadowRoot.querySelectorAll(".shapes");
   if(window.innerHeight > 0){
     for(const shape of shapes){
-        shape.style.cssText = "animation: none;";
+        //shape.style.cssText = "animation: none;";
     }
   }
   for (let i = 0; i < shapes.length; i++) {
