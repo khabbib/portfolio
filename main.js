@@ -1017,7 +1017,7 @@
     }
 `;let Tt=Ct;window.addEventListener("resize",(()=>{Tt=Ct})),customElements.define("cn-services",class extends it{static get styles(){return a`
       ${Tt}
-    `}constructor(){super()}galleryCategories=[{category:"UI/UX",img:"./sourcefile/services/uiux.png"},{category:"Software",img:"./sourcefile/services/web.png"},{category:"E-sport",img:"./sourcefile/services/e-sport.png"},{category:"Graphic",img:"./sourcefile/services/graphic.png"}];#s=null;set ic(t){this.#s=t,this.requestUpdate()}render(){return N`
+    `}constructor(){super()}galleryCategories=[{category:"UI/UX",img:"./sourcefile/services/uiux.png"},{category:"Software",img:"./sourcefile/services/web.png"},{category:"E-sport",img:"./sourcefile/services/e-sport.png"},{category:"Graphic",img:"./sourcefile/services/gfx.png"}];#s=null;set ic(t){this.#s=t,this.requestUpdate()}render(){return N`
       <div class="bg-ddd-prj">
         <div class="intro-ddd-prj">
           <div class="overline-primary-title-sections"></div>
